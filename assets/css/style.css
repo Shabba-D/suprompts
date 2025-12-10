@@ -152,6 +152,14 @@ h2 {
     color: var(--primary);
 }
 
+.prompt-type-selector {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+}
+
 .paragraph-cards {
     display: grid;
     grid-template-columns: 1fr;
@@ -167,14 +175,16 @@ h2 {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.paragraph-card.paragraph-card-hidden {
+    display: none;
+}
+
 .paragraph-card:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
 }
 
-.paragraph-card[data-paragraph="Goal"]::before,
-.paragraph-card[data-paragraph="Context"]::before,
-.paragraph-card[data-paragraph="Examples"]::before {
+.paragraph-card.paragraph-card-recommended::before {
     content: 'Recommandé';
     display: inline-block;
     font-size: 0.75em;
@@ -183,6 +193,10 @@ h2 {
     border-radius: 999px;
     background-color: var(--primary);
     color: var(--primary-foreground);
+}
+
+.paragraph-card.paragraph-card-recommended {
+    border-color: var(--primary);
 }
 
 .paragraph-card h3 {
@@ -227,6 +241,38 @@ h2 {
 
 .paragraph-card[data-paragraph="Tone"] h3::before {
     content: '🎙️';
+}
+
+.paragraph-card[data-paragraph="Rhythm"] h3::before {
+    content: '♫️';
+}
+
+.paragraph-card[data-paragraph="Ambiance"] h3::before {
+    content: '🌌';
+}
+
+.paragraph-card[data-paragraph="Performers"] h3::before {
+    content: '🎤';
+}
+
+.paragraph-card[data-paragraph="Background"] h3::before {
+    content: '🏞️';
+}
+
+.paragraph-card[data-paragraph="Filter"] h3::before {
+    content: '🔍';
+}
+
+.paragraph-card[data-paragraph="Style"] h3::before {
+    content: '🎨';
+}
+
+.paragraph-card[data-paragraph="Location"] h3::before {
+    content: '📍';
+}
+
+.paragraph-card[data-paragraph="Job"] h3::before {
+    content: '💼';
 }
 
 .paragraph-card p {

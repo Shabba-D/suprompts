@@ -26,48 +26,12 @@
         </div>
         <div class="left-panel panel-active" data-panel-id="sections">
             <h2>Sections</h2>
-            <div class="paragraph-cards">
-                <div class="paragraph-card" data-paragraph="Persona" title="Exemple : Tu es un expert en marketing B2B qui conseille une PME.">
-                    <h3>Persona</h3>
-                    <p>Définis le persona de l’IA : quel rôle doit-elle
-                        jouer (expert, critique, enseignant, etc.) ?</p>
-                </div>
-                <div class="paragraph-card" data-paragraph="Goal" title="Exemple : Générer un plan d'article de blog en 5 sections.">
-                    <h3>Goal</h3>
-                    <p>Quel est l’objectif principal de ce prompt ? Que doit
-                        accomplir l’IA ?</p>
-                </div>
-                <div class="paragraph-card" data-paragraph="Context" title="Exemple : L'entreprise vend un SaaS aux agences de communication.">
-                    <h3>Context</h3>
-                    <p>Donne le contexte et les informations de base
-                        nécessaires à la tâche.</p>
-                </div>
-                <div class="paragraph-card" data-paragraph="Examples" title="Exemple : Question utilisateur → réponse attendue, ou entrée brute → sortie idéale.">
-                    <h3>Examples</h3>
-                    <p>Ajoute un ou plusieurs exemples d’entrées/sorties
-                        attendues.</p>
-                </div>
-                <div class="paragraph-card" data-paragraph="Audience" title="Exemple : Public de débutants sans jargon technique.">
-                    <h3>Audience</h3>
-                    <p>Indique pour quel public la réponse est destinée
-                        (débutants, experts, etc.).</p>
-                </div>
-                <div class="paragraph-card" data-paragraph="Constraints" title="Exemple : Réponse en moins de 10 phrases, ton neutre, pas de tableau.">
-                    <h3>Constraints</h3>
-                    <p>Fixe les règles et limites : ce que l’IA doit faire
-                        ou éviter de faire.</p>
-                </div>
-                <div class="paragraph-card" data-paragraph="Format" title="Exemple : Liste à puces Markdown avec titres de niveau 2.">
-                    <h3>Format</h3>
-                    <p>Précise le format de sortie (JSON, liste, tableau
-                        Markdown, etc.).</p>
-                </div>
-                <div class="paragraph-card" data-paragraph="Tone" title="Exemple : Ton amical, pédagogique et motivant.">
-                    <h3>Tone</h3>
-                    <p>Définis le ton de la réponse (formel, amical,
-                        académique, etc.).</p>
-                </div>
+            <div class="prompt-type-selector">
+                <label for="prompt-type-select">Type de
+                    prompt&nbsp;:</label>
+                <select id="prompt-type-select"></select>
             </div>
+            <div class="paragraph-cards"></div>
         </div>
         <div class="center-panel" data-panel-id="editor">
             <h2>Cartes</h2>
