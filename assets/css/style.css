@@ -662,6 +662,7 @@ select {
     gap: 6px;
     cursor: pointer;
 }
+
 /* Toast Notifications */
 .toast-container {
     position: fixed;
@@ -789,7 +790,8 @@ select {
 }
 
 .modal-btn-confirm:hover {
-    background-color: #0062a3; /* Darker accent */
+    background-color: #0062a3;
+    /* Darker accent */
 }
 
 /* Specific danger style for confirm button if needed */
@@ -808,7 +810,8 @@ select {
     flex-direction: column;
     gap: 12px;
     margin-bottom: 20px;
-    background-color: var(--card-bg); /* Use card bg for unity */
+    background-color: var(--card-bg);
+    /* Use card bg for unity */
     border-radius: 8px;
     padding: 4px;
 }
@@ -888,7 +891,8 @@ select {
     justify-content: center;
     cursor: pointer;
     font-size: 1.2em;
-    margin: 0; /* Override default label margin */
+    margin: 0;
+    /* Override default label margin */
 }
 
 .icon-button-label:hover {
@@ -914,7 +918,8 @@ select {
 }
 
 .select-group {
-    min-width: 0; /* Allow flex shrinking */
+    min-width: 0;
+    /* Allow flex shrinking */
 }
 
 #saved-prompts-select {
@@ -929,7 +934,8 @@ select {
 
 /* Override existing margins if needed */
 .prompt-controls {
-    display: none; /* Hide old controls if any remain */
+    display: none;
+    /* Hide old controls if any remain */
 }
 
 /* Update specific styles for unity */
@@ -942,8 +948,10 @@ select {
     color: var(--primary-text);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    height: 36px; /* Uniform height */
-    box-sizing: border-box; /* Ensure padding doesn't affect height */
+    height: 36px;
+    /* Uniform height */
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect height */
 }
 
 /* Specific adjustments for buttons to ensure alignment */
@@ -968,7 +976,8 @@ select {
 }
 
 .prompt-manager-grid select {
-    padding: 0 30px 0 10px; /* Space for arrow */
+    padding: 0 30px 0 10px;
+    /* Space for arrow */
     cursor: pointer;
 }
 
@@ -988,7 +997,7 @@ select {
 /* Adjust the Import Label acting as a button */
 .prompt-manager-grid .icon-button-label {
     margin: 0;
-    width: auto; /* Allow text width */
+    width: 36px;
     cursor: pointer;
     font-size: 0.9em;
 }
@@ -997,5 +1006,6 @@ select {
 .divider-vertical {
     height: 24px;
     background-color: var(--border-color);
-    margin: 0 8px; /* More spacing as requested */
+    margin: 0 8px;
+    /* More spacing as requested */
 }
