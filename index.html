@@ -103,23 +103,28 @@
                                 <option value="">Charger un prompt ou modèle...</option>
                             </select>
                         </div>
-                        <button id="load-prompt-btn" class="secondary-button action-button" title="Charger">📥</button>
-                        <button id="delete-prompt-btn" class="secondary-button danger-button action-button" title="Supprimer">🗑️</button>
-                        <div class="divider-vertical"></div>
-                        <label class="icon-button-label" title="Importer JSON">
-                            📂 <input id="import-prompt-input" type="file" accept="application/json" hidden>
-                        </label>
-                        <button id="export-prompt-btn" class="icon-button" title="Exporter JSON">💾</button>
+                        <button id="load-prompt-btn" class="secondary-button action-button" title="Charger le prompt sélectionné">Charger</button>
+                        <button id="delete-prompt-btn" class="secondary-button danger-button action-button" title="Supprimer le prompt sélectionné">Supprimer</button>
                     </div>
 
                     <!-- Row 3: Format & Actions -->
                     <div class="prompt-actions-row">
-                        <select id="language" class="compact-select">
+                        <select id="language" class="compact-select" title="Format de sortie">
                             <option value="markdown">MD</option>
                             <option value="xml">XML</option>
                             <option value="json">JSON</option>
                             <option value="yaml">YAML</option>
                         </select>
+
+                        <div class="divider-vertical"></div>
+
+                        <label class="icon-button-label secondary-button action-button" title="Importer une sauvegarde JSON">
+                            Importer <input id="import-prompt-input" type="file" accept="application/json" hidden>
+                        </label>
+                        <button id="export-prompt-btn" class="secondary-button action-button" title="Exporter une sauvegarde JSON">Exporter</button>
+
+                        <div class="divider-vertical"></div>
+
                         <button id="ab-open-btn" class="secondary-button action-button">Comparer</button>
                         <button id="copy-prompt-btn" class="primary-button action-button flex-grow">Copier</button>
                     </div>
