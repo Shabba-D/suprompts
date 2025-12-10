@@ -65,8 +65,10 @@ function setupPromptEventListeners() {
     }
 
     // Importer un prompt
-    if (importPromptButton && importPromptInput) {
-        importPromptButton.addEventListener('click', () => importPromptInput.click());
+    if (importPromptInput) {
+        if (importPromptButton) {
+            importPromptButton.addEventListener('click', () => importPromptInput.click());
+        }
         importPromptInput.addEventListener('change', handleImportPrompt);
     }
 
