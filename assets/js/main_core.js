@@ -6,6 +6,26 @@ import {
     PARAGRAPH_SECTIONS
 } from './prompt_data.js';
 
+import {
+    triggerActionButtonAnimation,
+    generatePromptText,
+    comparePromptsByFavoriteAndUpdatedAtDesc,
+    showToast,
+    showConfirm,
+    getBaseNameFromPromptName,
+    findNextVariantName,
+    ensureUniquePromptName
+} from './core_utils.js';
+
+import {
+    computeAnalysis
+} from './core_analysis.js';
+
+import {
+    loadStorageData,
+    saveStorageData
+} from './core_storage.js';
+
 let paragraphCards = document.querySelectorAll('.paragraph-card');
 
 const cardsContainer = document.getElementById('cards-container');
@@ -94,15 +114,6 @@ let storageData = {
 };
 
 let cards = [];
-
-function triggerActionButtonAnimation(button) {
-    if (!button) {
-        return;
-    }
-    button.classList.remove('action-button-animate');
-    void button.offsetWidth;
-    button.classList.add('action-button-animate');
-}
 
 function showCopyFeedback(message, isError) {
     if (!copyFeedback) {
@@ -211,48 +222,6 @@ function renderCards() {
     });
 }
 
-function generatePromptText(cardsToFormat, language) {
-    const order = Array.from(paragraphCards).map(card => card.dataset.paragraph);
-    const sortedCards = [...cardsToFormat].sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
-    let promptText = '';
-    if (language === 'markdown') {
-        sortedCards.forEach(card => {
-            if (card.content) {
-                promptText += `## ${card.type}\n\n${card.content}\n\n`;
-            }
-        });
-    } else if (language === 'xml') {
-        promptText += '<prompt>\n';
-        sortedCards.forEach(card => {
-            if (card.content) {
-                promptText += `    <${card.type.toLowerCase()}>${card.content}</${card.type.toLowerCase()}>\n`;
-            }
-        });
-        promptText += '</prompt>';
-    } else if (language === 'json') {
-        const obj = {};
-        sortedCards.forEach(card => {
-            if (card.content && card.content.trim()) {
-                obj[card.type.toLowerCase()] = card.content;
-            }
-        });
-        promptText = JSON.stringify(obj, null, 2);
-    } else if (language === 'yaml') {
-        const lines = [];
-        sortedCards.forEach(card => {
-            if (card.content && card.content.trim()) {
-                const key = card.type.toLowerCase();
-                lines.push(key + ': |');
-                card.content.split('\n').forEach(line => {
-                    lines.push('  ' + line);
-                });
-            }
-        });
-        promptText = lines.join('\n');
-    }
-    return promptText;
-}
-
 function updatePrompt() {
     if (!promptOutput || !languageSelector) {
         return;
@@ -266,53 +235,11 @@ function updatePrompt() {
 }
 
 function loadStorage() {
-    try {
-        if (!window.localStorage) {
-            storageData = {
-                lastSession: null,
-                prompts: {},
-                versions: {}
-            };
-            return;
-        }
-        const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-            storageData = {
-                lastSession: null,
-                prompts: {},
-                versions: {}
-            };
-            return;
-        }
-        const parsed = JSON.parse(raw);
-        storageData = {
-            lastSession: parsed && parsed.lastSession ? parsed.lastSession : null,
-            prompts: parsed && parsed.prompts && typeof parsed.prompts === 'object' ? parsed.prompts : {},
-            versions: parsed && parsed.versions && typeof parsed.versions === 'object' ? parsed.versions : {}
-        };
-    } catch (e) {
-        storageData = {
-            lastSession: null,
-            prompts: {},
-            versions: {}
-        };
-    }
+    storageData = loadStorageData(STORAGE_KEY);
 }
 
 function saveStorage() {
-    try {
-        if (!window.localStorage) {
-            return;
-        }
-        const data = {
-            lastSession: storageData.lastSession,
-            prompts: storageData.prompts,
-            versions: storageData.versions || {}
-        };
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (e) {
-        // ignore storage errors
-    }
+    saveStorageData(STORAGE_KEY, storageData);
 }
 
 function saveLastSession() {
@@ -495,7 +422,8 @@ function updateAnalysis() {
     if (!analysisScoreElement || !analysisRecommendationsElement) {
         return;
     }
-    const result = computeLocalAnalysis();
+    const recommendedSections = getRecommendedSections();
+    const result = computeAnalysis(cards, recommendedSections);
     let score = typeof result.score === 'number' ? result.score : 0;
     if (score < 0) {
         score = 0;
@@ -518,91 +446,14 @@ function updateAnalysis() {
     });
 }
 
+// Kept for backward compatibility if any external code calls it directly, though internal calls use the imported one.
+// Actually, `computeLocalAnalysis` was exported.
+// We can re-export a wrapper or just remove it if we are sure nobody calls it.
+// The audit said it's local analysis.
+// I'll make a wrapper to be safe as I see `computeLocalAnalysis` in the original exports.
 function computeLocalAnalysis() {
-    const byType = {};
-    cards.forEach(card => {
-        byType[card.type] = card;
-    });
-    let score = 100;
-    const recommendations = [];
-    const recommended = getRecommendedSections();
-    let missingImportant = 0;
-    recommended.forEach(type => {
-        const card = byType[type];
-        if (!card || !card.content || !card.content.trim()) {
-            missingImportant += 1;
-        }
-    });
-    if (missingImportant > 0) {
-        score -= missingImportant * 12;
-        const goalCard = byType.Goal;
-        if (recommended.includes('Goal') && (!goalCard || !goalCard.content || !goalCard.content.trim())) {
-            recommendations.push('Ajoute une section Goal claire pour expliciter l’objectif de la tâche.');
-        }
-        const contextCard = byType.Context;
-        if (recommended.includes('Context') && (!contextCard || !contextCard.content || !contextCard.content.trim())) {
-            recommendations.push('Ajoute une section Context pour donner plus de contexte à l’IA.');
-        }
-        const examplesCard = byType.Examples;
-        if (recommended.includes('Examples') && (!examplesCard || !examplesCard.content || !examplesCard.content.trim())) {
-            recommendations.push('Ajoute des exemples concrets dans la section Examples.');
-        }
-    }
-
-    const constraintsCard = byType.Constraints;
-    if (!constraintsCard || !constraintsCard.content || !constraintsCard.content.trim()) {
-        score -= 10;
-        recommendations.push('Ajoute des contraintes explicites (format, longueur, style, éléments à éviter).');
-    }
-
-    const personaCard = byType.Persona;
-    if (!personaCard || !personaCard.content || !personaCard.content.trim()) {
-        score -= 8;
-        recommendations.push('Précise la persona de l’IA (rôle, niveau d’expertise, posture).');
-    }
-
-    const toneCard = byType.Tone;
-    if (!toneCard || !toneCard.content || !toneCard.content.trim()) {
-        score -= 4;
-        recommendations.push('Indique le ton souhaité (pédagogique, concis, formel, etc.).');
-    }
-
-    let totalChars = 0;
-    cards.forEach(card => {
-        if (card.content) {
-            totalChars += card.content.length;
-        }
-    });
-    if (totalChars < 300) {
-        score -= 10;
-        recommendations.push('Le prompt est très court : détaille davantage le contexte, l’objectif et les attentes.');
-    } else if (totalChars < 800) {
-        score -= 4;
-        recommendations.push('Tu peux encore préciser certains éléments (contexte, exemples ou contraintes) pour mieux guider l’IA.');
-    } else if (totalChars > 4000) {
-        score -= 4;
-        recommendations.push('Le prompt est très long : vérifie si certaines parties peuvent être simplifiées ou déplacées en annexe.');
-    }
-
-    if (recommendations.length > 6) {
-        const unique = [];
-        recommendations.forEach(text => {
-            if (!unique.includes(text)) {
-                unique.push(text);
-            }
-        });
-        while (unique.length > 6) {
-            unique.pop();
-        }
-        return {
-            score: score,
-            recommendations: unique
-        };
-    }
-    return {
-        score: score,
-        recommendations: recommendations
-    };
+    const recommendedSections = getRecommendedSections();
+    return computeAnalysis(cards, recommendedSections);
 }
 
 function setupParagraphCardListeners() {
@@ -683,159 +534,6 @@ function initAnalysisToggle() {
     });
 }
 
-function getBaseNameFromPromptName(name) {
-    if (!name) return '';
-    // Supprime les numéros de version entre parenthèses à la fin
-    const baseName = name.replace(/\s*\([^)]*\)$/, '').trim();
-    // Supprime les suffixes de variante (espace suivi d'un nombre)
-    return baseName.replace(/\s+\d+$/, '');
-}
-
-function findNextVariantName(baseName) {
-    const trimmed = baseName ? baseName.trim() : '';
-    if (!trimmed) return '';
-
-    let maxIndex = 1;
-    Object.keys(storageData.prompts || {}).forEach(existingName => {
-        if (existingName === trimmed) {
-            if (maxIndex === 1) {
-                maxIndex = 2;
-            }
-            return;
-        }
-        if (existingName.indexOf(trimmed + ' ') === 0) {
-            const suffix = existingName.substring(trimmed.length + 1);
-            const num = parseInt(suffix, 10);
-            if (!isNaN(num) && num >= maxIndex) {
-                maxIndex = num + 1;
-            }
-        }
-    });
-
-    return trimmed + ' ' + maxIndex;
-}
-
-function comparePromptsByFavoriteAndUpdatedAtDesc(a, b) {
-    // Les favoris d'abord
-    if (a.isFavorite && !b.isFavorite) return -1;
-    if (!a.isFavorite && b.isFavorite) return 1;
-
-    // Puis par date de modification (les plus récents d'abord)
-    const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(0);
-    const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(0);
-    return dateB - dateA;
-}
-
-function ensurePromptName() {
-    if (!promptNameInput) return '';
-
-    let name = promptNameInput.value.trim();
-    if (!name) {
-        // Si le champ est vide, on utilise la date et l'heure
-        const now = new Date();
-        name = `Prompt ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-        promptNameInput.value = name;
-    }
-
-    // Si le nom existe déjà, on ajoute un numéro de version
-    if (storageData.prompts[name]) {
-        const baseName = getBaseNameFromPromptName(name);
-        name = findNextVariantName(baseName);
-        promptNameInput.value = name;
-    }
-
-    return name;
-}
-
-function showToast(message, type = 'info') {
-    let container = document.querySelector('.toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-    }
-
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.textContent = message;
-
-    container.appendChild(toast);
-
-    // Force reflow for animation
-    void toast.offsetWidth;
-    toast.classList.add('toast-show');
-
-    setTimeout(() => {
-        toast.classList.remove('toast-show');
-        setTimeout(() => {
-            if (toast.parentElement) {
-                toast.parentElement.removeChild(toast);
-            }
-        }, 300);
-    }, 3000);
-}
-
-function showConfirm(message, onConfirm, options = {}) {
-    const modal = document.getElementById('confirm-modal');
-    const msgEl = document.getElementById('confirm-modal-message');
-    const cancelBtn = document.getElementById('confirm-modal-cancel');
-    const okBtn = document.getElementById('confirm-modal-ok');
-
-    if (!modal || !msgEl || !cancelBtn || !okBtn) {
-        // Fallback if modal elements missing
-        if (window.confirm(message)) {
-            onConfirm();
-        }
-        return;
-    }
-
-    msgEl.textContent = message;
-
-    // Optional: customize button style (e.g., danger)
-    if (options.isDanger) {
-        okBtn.classList.add('modal-btn-danger');
-        okBtn.classList.remove('modal-btn-confirm');
-    } else {
-        okBtn.classList.add('modal-btn-confirm');
-        okBtn.classList.remove('modal-btn-danger');
-    }
-
-    // Handlers
-    const close = () => {
-        modal.classList.remove('modal-open');
-        cleanup();
-    };
-
-    const handleCancel = () => {
-        if (options.onCancel && typeof options.onCancel === 'function') {
-            options.onCancel();
-        }
-        close();
-    };
-
-    const handleOk = () => {
-        onConfirm();
-        close();
-    };
-
-    const handleKey = (e) => {
-        if (e.key === 'Escape') handleCancel();
-    };
-
-    const cleanup = () => {
-        cancelBtn.removeEventListener('click', handleCancel);
-        okBtn.removeEventListener('click', handleOk);
-        document.removeEventListener('keydown', handleKey);
-    };
-
-    cancelBtn.addEventListener('click', handleCancel);
-    okBtn.addEventListener('click', handleOk);
-    document.addEventListener('keydown', handleKey);
-
-    modal.classList.add('modal-open');
-    okBtn.focus();
-}
-
 function initializeCoreModule() {
     loadStorage();
     initializeFromStorage();
@@ -864,6 +562,9 @@ export {
     comparePromptsByFavoriteAndUpdatedAtDesc,
     showToast,
     showConfirm,
+    getBaseNameFromPromptName,
+    findNextVariantName,
+    ensureUniquePromptName,
     saveStorage,
     initializeCoreModule
 };
