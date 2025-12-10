@@ -1,69 +1,24 @@
 :root {
-  --background: #121113;
-  --foreground: #c1c1c1;
-  --card: #121212;
-  --card-foreground: #c1c1c1;
-  --popover: #121113;
-  --popover-foreground: #c1c1c1;
-  --primary: #e78a53;
-  --primary-foreground: #121113;
-  --secondary: #5f8787;
-  --secondary-foreground: #121113;
-  --muted: #222222;
-  --muted-foreground: #888888;
-  --accent: #333333;
-  --accent-foreground: #c1c1c1;
-  --destructive: #5f8787;
-  --destructive-foreground: #121113;
-  --border: #222222;
-  --input: #222222;
-  --ring: #e78a53;
-  --chart-1: #5f8787;
-  --chart-2: #e78a53;
-  --chart-3: #fbcb97;
-  --chart-4: #888888;
-  --chart-5: #999999;
-  --sidebar: #121212;
-  --sidebar-foreground: #c1c1c1;
-  --sidebar-primary: #e78a53;
-  --sidebar-primary-foreground: #121113;
-  --sidebar-accent: #333333;
-  --sidebar-accent-foreground: #c1c1c1;
-  --sidebar-border: #222222;
-  --sidebar-ring: #e78a53;
-  --font-sans: Geist Mono, ui-monospace, monospace;
-  --font-serif: serif;
-  --font-mono: JetBrains Mono, monospace;
-  --radius: 0.75rem;
-  --shadow-x: 0px;
-  --shadow-y: 1px;
-  --shadow-blur: 4px;
-  --shadow-spread: 0px;
-  --shadow-opacity: 0.05;
-  --shadow-color: #000000;
-  --shadow-2xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
-  --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
-  --shadow-sm: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
-  --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
-  --shadow-md: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 2px 4px -1px hsl(0 0% 0% / 0.05);
-  --shadow-lg: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 4px 6px -1px hsl(0 0% 0% / 0.05);
-  --shadow-xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 8px 10px -1px hsl(0 0% 0% / 0.05);
-  --shadow-2xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.13);
-  --tracking-normal: 0rem;
-  --spacing: 0.25rem;
+    --bg-color: #1a1a1a;
+    --primary-text: #e0e0e0;
+    --secondary-text: #b0b0b0;
+    --card-bg: #2a2a2a;
+    --border-color: #444;
+    --accent-color: #007acc;
+    --button-bg: #333;
+    --button-hover-bg: #444;
 }
 
 body {
-    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
-    background-color: var(--background);
-    color: var(--foreground);
-    letter-spacing: var(--tracking-normal);
+    background-color: var(--bg-color);
+    color: var(--primary-text);
 }
 
 .site-header {
-    background-color: var(--card);
-    border-bottom: 1px solid var(--border);
+    background-color: #111;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .site-header-inner {
@@ -85,7 +40,7 @@ body {
 .site-title {
     margin: 0;
     font-size: 1.1rem;
-    color: var(--foreground);
+    color: var(--primary-text);
 }
 
 .container {
@@ -105,10 +60,10 @@ body {
 
 .mobile-tab-button {
     flex: 1;
-    background-color: var(--secondary);
-    color: var(--foreground);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
     padding: 6px 8px;
     font-size: 0.85rem;
     cursor: pointer;
@@ -116,20 +71,20 @@ body {
 }
 
 .mobile-tab-button.mobile-tab-active {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+    background-color: var(--accent-color);
+    color: #ffffff;
 }
 
 .left-panel,
 .center-panel,
 .right-panel {
-    background-color: var(--card);
-    border-radius: var(--radius);
+    background-color: var(--card-bg);
+    border-radius: 8px;
     padding: 20px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .left-panel {
@@ -147,9 +102,9 @@ body {
 
 h2 {
     margin-top: 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 10px;
-    color: var(--primary);
+    color: var(--accent-color);
 }
 
 .paragraph-cards {
@@ -159,9 +114,9 @@ h2 {
 }
 
 .paragraph-card {
-    background-color: var(--background);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
     padding: 15px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -169,7 +124,7 @@ h2 {
 
 .paragraph-card:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .paragraph-card[data-paragraph="Goal"]::before,
@@ -181,13 +136,13 @@ h2 {
     padding: 2px 6px;
     margin-bottom: 6px;
     border-radius: 999px;
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+    background-color: var(--accent-color);
+    color: #ffffff;
 }
 
 .paragraph-card h3 {
     margin: 0 0 5px 0;
-    color: var(--foreground);
+    color: var(--primary-text);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -232,13 +187,13 @@ h2 {
 .paragraph-card p {
     margin: 0;
     font-size: 0.9em;
-    color: var(--muted-foreground);
+    color: var(--secondary-text);
 }
 
 .card {
-    background-color: var(--background);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
     padding: 15px;
     margin-bottom: 15px;
 }
@@ -253,13 +208,13 @@ h2 {
     align-items: center;
     margin-top: 8px;
     font-size: 0.85em;
-    color: var(--muted-foreground);
+    color: var(--secondary-text);
 }
 
 .clear-btn {
-    background-color: var(--muted);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 4px 10px;
     cursor: pointer;
@@ -267,15 +222,15 @@ h2 {
 }
 
 .clear-btn:hover {
-    background-color: var(--accent);
+    background-color: var(--button-hover-bg);
 }
 
 textarea {
     width: 100%;
     height: 120px;
-    background-color: var(--input);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 10px;
     box-sizing: border-box;
@@ -283,8 +238,8 @@ textarea {
 }
 
 .remove-btn {
-    background-color: var(--destructive);
-    color: var(--destructive-foreground);
+    background-color: #c0392b;
+    color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 4px;
@@ -294,11 +249,16 @@ textarea {
 }
 
 .remove-btn:hover {
-    opacity: 0.9;
+    background-color: #e74c3c;
 }
 
 .prompt-controls {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 10px;
+    position: relative;
 }
 
 .prompt-format-row {
@@ -316,10 +276,15 @@ textarea {
     gap: 10px;
 }
 
+.prompt-actions-row .secondary-button,
+.prompt-actions-row .copy-button {
+    flex: 1;
+}
+
 .copy-button {
-    background-color: var(--muted);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 6px 12px;
     cursor: pointer;
@@ -327,12 +292,12 @@ textarea {
 }
 
 .copy-button:hover {
-    background-color: var(--accent);
+    background-color: var(--button-hover-bg);
 }
 
 .copy-feedback {
     font-size: 0.8em;
-    color: var(--muted-foreground);
+    color: var(--secondary-text);
     position: absolute;
     right: 0;
     top: 100%;
@@ -356,7 +321,7 @@ textarea {
     align-items: center;
     gap: 8px;
     font-size: 0.85rem;
-    color: var(--muted-foreground);
+    color: #555;
 }
 
 .rename-suggestion-text {
@@ -373,9 +338,9 @@ label {
 }
 
 select {
-    background-color: var(--input);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 5px;
     max-width: 100px;
@@ -399,7 +364,7 @@ select {
     align-items: center;
     gap: 6px;
     cursor: default;
-    color: var(--muted-foreground);
+    color: var(--secondary-text);
 }
 
 .advanced-tools-icon {
@@ -409,7 +374,7 @@ select {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
     font-size: 0.8em;
 }
 
@@ -418,8 +383,8 @@ select {
     margin-top: 6px;
     padding: 8px;
     border-radius: 6px;
-    border: 1px dashed var(--border);
-    background-color: var(--card);
+    border: 1px dashed var(--border-color);
+    background-color: var(--card-bg);
 }
 
 .advanced-tools-wrapper.advanced-tools-open .advanced-tools-panel {
@@ -440,9 +405,9 @@ select {
 
 #prompt-name-input {
     flex: 1;
-    background-color: var(--input);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 6px 8px;
 }
@@ -452,9 +417,9 @@ select {
 }
 
 .secondary-button {
-    background-color: var(--muted);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 4px 10px;
     cursor: pointer;
@@ -463,7 +428,7 @@ select {
 }
 
 .secondary-button:hover {
-    background-color: var(--accent);
+    background-color: var(--button-hover-bg);
 }
 
 .action-button {
@@ -500,9 +465,9 @@ select {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--muted);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 4px 10px;
     cursor: pointer;
@@ -510,12 +475,12 @@ select {
 }
 
 .import-label:hover {
-    background-color: var(--accent);
+    background-color: var(--button-hover-bg);
 }
 
 .quality-indicator {
     font-size: 0.85em;
-    color: var(--muted-foreground);
+    color: var(--secondary-text);
     margin-bottom: 10px;
 }
 
@@ -530,8 +495,8 @@ select {
 
 .analysis-panel {
     font-size: 0.85em;
-    color: var(--muted-foreground);
-    border-top: 1px solid var(--border);
+    color: var(--secondary-text);
+    border-top: 1px solid var(--border-color);
     padding-top: 8px;
     margin-top: 4px;
     margin-bottom: 10px;
@@ -547,7 +512,7 @@ select {
 
 #analysis-score {
     font-weight: 600;
-    color: var(--primary);
+    color: var(--accent-color);
 }
 
 .analysis-recommendations {
@@ -576,8 +541,8 @@ select {
 
 #prompt-output {
     white-space: pre-wrap;
-    background-color: var(--background);
-    border: 1px solid var(--border);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 15px;
     height: 100%;
@@ -599,16 +564,16 @@ select {
 }
 
 .ab-overlay-content {
-    background-color: var(--card);
+    background-color: var(--card-bg);
     border-radius: 8px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
     padding: 16px;
     width: 90vw;
     max-width: 1400px;
     height: 80vh;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
 }
 
 .ab-overlay-header {
@@ -626,8 +591,8 @@ select {
 }
 
 .ab-column {
-    background-color: var(--background);
-    border: 1px solid var(--border);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 10px;
     display: flex;
@@ -667,8 +632,8 @@ select {
 
 .ab-right-prompt {
     white-space: pre-wrap;
-    background-color: var(--card); /* Adjust for contrast */
-    border: 1px solid var(--border);
+    background-color: #111;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 8px;
     flex: 1;
@@ -711,12 +676,12 @@ select {
 }
 
 .toast {
-    background-color: var(--card);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: var(--card-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     padding: 10px 20px;
     border-radius: 6px;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -741,7 +706,7 @@ select {
 }
 
 .toast-info {
-    border-left: 4px solid var(--primary);
+    border-left: 4px solid var(--accent-color);
 }
 
 /* Modal Dialog */
@@ -764,13 +729,13 @@ select {
 }
 
 .modal-box {
-    background-color: var(--card);
-    border: 1px solid var(--border);
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 20px;
     width: 90%;
     max-width: 400px;
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     transform: translateY(20px);
     transition: transform 0.2s ease;
 }
@@ -783,12 +748,12 @@ select {
     font-size: 1.1em;
     font-weight: 600;
     margin-bottom: 12px;
-    color: var(--foreground);
+    color: var(--primary-text);
 }
 
 .modal-body {
     margin-bottom: 20px;
-    color: var(--muted-foreground);
+    color: var(--secondary-text);
     font-size: 0.95em;
     line-height: 1.5;
 }
@@ -809,32 +774,32 @@ select {
 
 .modal-btn-cancel {
     background-color: transparent;
-    color: var(--muted-foreground);
-    border-color: var(--border);
+    color: var(--secondary-text);
+    border-color: var(--border-color);
 }
 
 .modal-btn-cancel:hover {
-    background-color: var(--muted);
-    color: var(--foreground);
+    background-color: var(--button-bg);
+    color: var(--primary-text);
 }
 
 .modal-btn-confirm {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+    background-color: var(--accent-color);
+    color: white;
 }
 
 .modal-btn-confirm:hover {
-    opacity: 0.9;
+    background-color: #0062a3; /* Darker accent */
 }
 
 /* Specific danger style for confirm button if needed */
 .modal-btn-danger {
-    background-color: var(--destructive);
-    color: var(--destructive-foreground);
+    background-color: #c0392b;
+    color: white;
 }
 
 .modal-btn-danger:hover {
-    opacity: 0.9;
+    background-color: #a93226;
 }
 
 /* Prompt Manager Grid Layout */
@@ -843,7 +808,7 @@ select {
     flex-direction: column;
     gap: 12px;
     margin-bottom: 20px;
-    background-color: var(--card); /* Use card bg for unity */
+    background-color: var(--card-bg); /* Use card bg for unity */
     border-radius: 8px;
     padding: 4px;
 }
@@ -867,8 +832,8 @@ select {
 }
 
 .primary-button {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+    background-color: var(--accent-color);
+    color: white;
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
@@ -877,24 +842,24 @@ select {
 }
 
 .primary-button:hover {
-    opacity: 0.9;
+    background-color: #0062a3;
 }
 
 .danger-button {
     background-color: transparent;
-    border-color: var(--destructive);
-    color: var(--destructive);
+    border-color: #c0392b;
+    color: #e74c3c;
 }
 
 .danger-button:hover {
-    background-color: var(--destructive);
-    color: var(--destructive-foreground);
+    background-color: #c0392b;
+    color: white;
 }
 
 .icon-button {
     background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted-foreground);
+    border: 1px solid var(--border-color);
+    color: var(--secondary-text);
     width: 36px;
     height: 36px;
     border-radius: 4px;
@@ -907,14 +872,14 @@ select {
 }
 
 .icon-button:hover {
-    background-color: var(--accent);
-    color: var(--foreground);
+    background-color: var(--button-hover-bg);
+    color: var(--primary-text);
 }
 
 .icon-button-label {
     background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted-foreground);
+    border: 1px solid var(--border-color);
+    color: var(--secondary-text);
     width: 36px;
     height: 36px;
     border-radius: 4px;
@@ -927,14 +892,14 @@ select {
 }
 
 .icon-button-label:hover {
-    background-color: var(--accent);
-    color: var(--foreground);
+    background-color: var(--button-hover-bg);
+    color: var(--primary-text);
 }
 
 .divider-vertical {
     width: 1px;
     height: 24px;
-    background-color: var(--border);
+    background-color: var(--border-color);
     margin: 0 4px;
 }
 
@@ -942,9 +907,9 @@ select {
     width: auto;
     min-width: 80px;
     padding: 8px;
-    background-color: var(--input);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
 }
 
@@ -955,11 +920,16 @@ select {
 #saved-prompts-select {
     width: 100%;
     padding: 8px;
-    background-color: var(--input);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     text-overflow: ellipsis;
+}
+
+/* Override existing margins if needed */
+.prompt-controls {
+    display: none; /* Hide old controls if any remain */
 }
 
 /* Update specific styles for unity */
@@ -968,9 +938,9 @@ select {
 .prompt-manager-grid .secondary-button,
 .prompt-manager-grid .icon-button,
 .prompt-manager-grid .icon-button-label {
-    background-color: var(--input);
-    color: var(--foreground);
-    border: 1px solid var(--border);
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     height: 36px; /* Uniform height */
     box-sizing: border-box; /* Ensure padding doesn't affect height */
@@ -1005,14 +975,14 @@ select {
 /* Hover effects */
 .prompt-manager-grid input[type="text"]:focus,
 .prompt-manager-grid select:focus {
-    border-color: var(--primary);
+    border-color: var(--accent-color);
     outline: none;
 }
 
 .prompt-manager-grid .secondary-button:hover,
 .prompt-manager-grid .icon-button:hover,
 .prompt-manager-grid .icon-button-label:hover {
-    background-color: var(--accent);
+    background-color: var(--button-hover-bg);
 }
 
 /* Adjust the Import Label acting as a button */
@@ -1026,6 +996,6 @@ select {
 /* Divider adjustment for height */
 .divider-vertical {
     height: 24px;
-    background-color: var(--border);
+    background-color: var(--border-color);
     margin: 0 8px; /* More spacing as requested */
 }

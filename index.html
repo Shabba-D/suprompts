@@ -10,7 +10,7 @@
         <link rel="apple-touch-icon" href="assets/imgs/suPrompt_fav.png">
     </head>
 
-    <body>
+    <body class="dark">
         <header class="site-header">
             <div class="site-header-inner">
                 <img src="assets/imgs/suPrompt_fav.png" alt="Logo Suprompts"
@@ -86,113 +86,49 @@
             </div>
             <div class="right-panel" data-panel-id="prompt">
                 <h2>Prompt final</h2>
-                <div class="prompt-manager">
-                    <div class="prompt-name-row">
-                        <input id="prompt-name-input" type="text"
-                            placeholder="Nom du prompt">
-                        <div class="save-buttons-group">
-                            <button id="save-prompt-btn"
-                                class="secondary-button action-button">Sauvegarder</button>
-                            <button id="save-version-btn"
-                                class="secondary-button action-button">Version</button>
-                        </div>
+
+                <div class="prompt-manager-grid">
+                    <!-- Row 1: Header -->
+                    <div class="prompt-header-row">
+                        <input id="prompt-name-input" type="text" placeholder="Nom du prompt" class="flex-grow">
+                        <button id="favorite-prompt-btn" class="icon-button" title="Favori" aria-label="Ajouter aux favoris">☆</button>
+                        <button id="save-prompt-btn" class="primary-button action-button">Sauvegarder</button>
+                        <button id="save-version-btn" class="secondary-button action-button" title="Créer une version">v+</button>
                     </div>
-                    <div class="advanced-tools-wrapper">
-                        <div class="advanced-tools-header"
-                            title="Outils avancés (liste de prompts, export/import, versions)">
-                            <span class="advanced-tools-icon">⚙</span>
-                            <span>Outils avancés</span>
-                        </div>
-                        <div class="advanced-tools-panel">
-                            <div class="prompt-list-row">
-                                <select id="saved-prompts-select">
-                                    <option value>Sélectionner un prompt ou
-                                        une version…</option>
-                                </select>
-                                <button id="load-prompt-btn"
-                                    class="secondary-button action-button">Charger</button>
-                                <button id="delete-prompt-btn"
-                                    class="secondary-button action-button">Supprimer</button>
-                                <button id="favorite-prompt-btn"
-                                    class="secondary-button action-button"
-                                    title="Basculer le favori">☆</button>
-                            </div>
-                            <div class="prompt-io-row">
-                                <button id="export-prompt-btn"
-                                    class="secondary-button action-button">Exporter
-                                    en JSON</button>
-                                <label class="import-label">
-                                    Importer un JSON
-                                    <input id="import-prompt-input" type="file"
-                                        accept="application/json" hidden>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="prompt-controls">
-                    <div class="prompt-format-row">
-                        <div class="language-selector">
-                            <label for="language">Format&nbsp;:</label>
-                            <select id="language">
-                                <option value="markdown">Markdown</option>
-                                <option value="xml">XML</option>
-                                <option value="json">JSON</option>
-                                <option value="yaml">YAML</option>
+
+                    <!-- Row 2: Management -->
+                    <div class="prompt-tools-row">
+                        <div class="select-group flex-grow">
+                            <select id="saved-prompts-select" class="full-width">
+                                <option value="">Charger un prompt ou modèle...</option>
                             </select>
                         </div>
-                        <div class="template-selector">
-                            <label for="template-select">Modèle&nbsp;:</label>
-                            <select id="template-select">
-                                <option value>Aucun</option>
-                                <option value="simple-question">Question
-                                    simple</option>
-                                <option value="text-analysis">Analyse de
-                                    texte</option>
-                                <option value="code-generation">Génération de
-                                    code</option>
-                                <option value="agent-tool">Agent /
-                                    outil</option>
-                                <option value="bono-white-hat">Chapeau blanc
-                                    (faits / données)</option>
-                                <option value="bono-red-hat">Chapeau rouge
-                                    (émotions / intuitions)</option>
-                                <option value="bono-black-hat">Chapeau noir
-                                    (risques)</option>
-                                <option value="bono-yellow-hat">Chapeau jaune
-                                    (bénéfices)</option>
-                                <option value="bono-green-hat">Chapeau vert
-                                    (créativité)</option>
-                                <option value="bono-blue-hat">Chapeau bleu
-                                    (pilotage)</option>
-                                <option value="critic-harsh">Critique
-                                    sévère</option>
-                                <option value="critic-kind">Critique
-                                    bienveillant</option>
-                                <option value="devils-advocate">Avocat du
-                                    diable</option>
-                                <option value="tutor-socratic">Tuteur
-                                    socratique</option>
-                                <option value="coach-beginner">Coach pour
-                                    débutant</option>
-                                <option value="constraints-checker">Vérificateur
-                                    de contraintes</option>
-                                <option value="clarity-reviewer">Relecteur de
-                                    clarté</option>
-                            </select>
-                        </div>
+                        <button id="load-prompt-btn" class="secondary-button action-button" title="Charger le prompt sélectionné">Charger</button>
+                        <button id="delete-prompt-btn" class="secondary-button danger-button action-button" title="Supprimer le prompt sélectionné">Supprimer</button>
                     </div>
+
+                    <!-- Row 3: Format & Actions -->
                     <div class="prompt-actions-row">
-                        <button id="ab-open-btn"
-                            class="secondary-button action-button">Comparer</button>
-                        <button id="copy-prompt-btn"
-                            class="copy-button action-button">Copier
-                            le
-                            prompt
-                            complet</button>
+                        <select id="language" class="compact-select" title="Format de sortie">
+                            <option value="markdown">MD</option>
+                            <option value="xml">XML</option>
+                            <option value="json">JSON</option>
+                            <option value="yaml">YAML</option>
+                        </select>
+
+                        <div class="divider-vertical"></div>
+
+                        <label class="icon-button-label secondary-button action-button" title="Importer une sauvegarde JSON">
+                            Importer <input id="import-prompt-input" type="file" accept="application/json" hidden>
+                        </label>
+                        <button id="export-prompt-btn" class="secondary-button action-button" title="Exporter une sauvegarde JSON">Exporter</button>
+
+                        <div class="divider-vertical"></div>
+
+                        <button id="ab-open-btn" class="secondary-button action-button">Comparer</button>
+                        <button id="copy-prompt-btn" class="primary-button action-button flex-grow">Copier</button>
                     </div>
-                    <span id="copy-feedback" class="copy-feedback"
-                        aria-live="polite"></span>
+                    <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
                 </div>
                 <div class="analysis-panel">
                     <div class="analysis-header">
@@ -249,6 +185,18 @@
                                 class="ab-prompts-list"></ul>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirm Modal -->
+        <div id="confirm-modal" class="modal-overlay">
+            <div class="modal-box">
+                <div class="modal-header">Confirmation</div>
+                <div class="modal-body" id="confirm-modal-message"></div>
+                <div class="modal-footer">
+                    <button id="confirm-modal-cancel" class="modal-btn modal-btn-cancel">Annuler</button>
+                    <button id="confirm-modal-ok" class="modal-btn modal-btn-confirm">Confirmer</button>
                 </div>
             </div>
         </div>
