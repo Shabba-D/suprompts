@@ -53,3 +53,4 @@ L'application est fonctionnelle et présente une interface utilisateur propre et
 1.  **Uniformiser le formatage** : Centraliser la logique de génération du texte du prompt (Markdown/XML/JSON) dans `main_core.js` et l'exposer pour que `main_ab.js` l'utilise, évitant la duplication.
 2.  **Améliorer l'Import** : Remplacer l'alerte native `alert("Prompt importé !")` par une notification non bloquante (toast).
 3.  **Nettoyage** : Supprimer les références aux éléments DOM inexistants (comme le bouton `import-prompt-btn` qui a causé le bug).
+
