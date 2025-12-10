@@ -170,7 +170,7 @@ function populateABNamedPromptsList() {
     abNamedPromptsList.innerHTML = '';
 
     const entries = Object.keys(coreModule.storageData.prompts || {}).map(name => coreModule.storageData.prompts[name]);
-    entries.sort(comparePromptsByFavoriteAndUpdatedAtDesc);
+    entries.sort(coreModule.comparePromptsByFavoriteAndUpdatedAtDesc);
 
     entries.forEach(entry => {
         const li = document.createElement('li');
@@ -323,57 +323,6 @@ function handleABChoiceChange(event) {
     renderABRightPrompt();
 }
 
-function formatPromptForAB(cards, language) {
-    const effectiveLanguage = language ||
-        (coreModule.languageSelector && coreModule.languageSelector.value) ||
-        'markdown';
-
-    const order = Array.from(coreModule.paragraphCards || [])
-        .map(card => card.dataset.paragraph);
-    const sortedCards = Array.isArray(cards) ? [...cards].sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type)) : [];
-
-    let promptText = '';
-
-    if (effectiveLanguage === 'markdown') {
-        sortedCards.forEach(card => {
-            if (card.content) {
-                promptText += '## ' + card.type + '\n\n' + card.content + '\n\n';
-            }
-        });
-    } else if (effectiveLanguage === 'xml') {
-        promptText += '<prompt>\n';
-        sortedCards.forEach(card => {
-            if (card.content) {
-                const tag = card.type.toLowerCase();
-                promptText += '    <' + tag + '>' + card.content + '</' + tag + '>\n';
-            }
-        });
-        promptText += '</prompt>';
-    } else if (effectiveLanguage === 'json') {
-        const obj = {};
-        sortedCards.forEach(card => {
-            if (card.content && card.content.trim()) {
-                obj[card.type.toLowerCase()] = card.content;
-            }
-        });
-        promptText = JSON.stringify(obj, null, 2);
-    } else if (effectiveLanguage === 'yaml') {
-        const lines = [];
-        sortedCards.forEach(card => {
-            if (card.content && card.content.trim()) {
-                const key = card.type.toLowerCase();
-                lines.push(key + ': |');
-                card.content.split('\n').forEach(line => {
-                    lines.push('  ' + line);
-                });
-            }
-        });
-        promptText = lines.join('\n');
-    }
-
-    return promptText;
-}
-
 function renderABRightPrompt() {
     if (!abRightPrompt || !abRightCardsSnapshot) {
         return;
@@ -384,7 +333,11 @@ function renderABRightPrompt() {
     container.className = 'ab-right-prompt-content';
 
     // Formater le prompt en fonction du langage sélectionné
-    const formattedPrompt = formatPromptForAB(abRightCardsSnapshot, abRightLanguage);
+    const effectiveLanguage = abRightLanguage ||
+        (coreModule.languageSelector && coreModule.languageSelector.value) ||
+        'markdown';
+
+    const formattedPrompt = coreModule.generatePromptText(abRightCardsSnapshot, effectiveLanguage);
     container.textContent = formattedPrompt;
 
     // Mettre à jour l'affichage
@@ -425,17 +378,6 @@ function applyRightPromptToLeft() {
 }
 
 // --- Fonctions utilitaires ---
-
-function comparePromptsByFavoriteAndUpdatedAtDesc(a, b) {
-    // Les favoris d'abord
-    if (a.isFavorite && !b.isFavorite) return -1;
-    if (!a.isFavorite && b.isFavorite) return 1;
-
-    // Puis par date de modification (les plus récents d'abord)
-    const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(0);
-    const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(0);
-    return dateB - dateA;
-}
 
 function sortVersionsByCreatedAtDesc(versions) {
     if (!Array.isArray(versions)) {

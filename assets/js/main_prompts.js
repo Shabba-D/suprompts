@@ -10,7 +10,6 @@ const deletePromptButton = document.getElementById('delete-prompt-btn');
 const favoritePromptButton = document.getElementById('favorite-prompt-btn');
 const exportPromptButton = document.getElementById('export-prompt-btn');
 const importPromptInput = document.getElementById('import-prompt-input');
-const importPromptButton = document.getElementById('import-prompt-btn');
 
 // Référence au module core (sera initialisé par initPromptsModule)
 let coreModule = null;
@@ -66,9 +65,6 @@ function setupPromptEventListeners() {
 
     // Importer un prompt
     if (importPromptInput) {
-        if (importPromptButton) {
-            importPromptButton.addEventListener('click', () => importPromptInput.click());
-        }
         importPromptInput.addEventListener('change', handleImportPrompt);
     }
 
@@ -258,11 +254,11 @@ function importPromptFromFile(file) {
             importPromptFromData(data, file.name);
         } catch (error) {
             console.error('Erreur lors de l\'import du fichier :', error);
-            alert('Impossible d\'importer le fichier. Format invalide.');
+            coreModule.showToast('Impossible d\'importer le fichier. Format invalide.', 'error');
         }
     };
     reader.onerror = () => {
-        alert('Erreur lors de la lecture du fichier.');
+        coreModule.showToast('Erreur lors de la lecture du fichier.', 'error');
     };
     reader.readAsText(file);
 }
@@ -274,7 +270,7 @@ function importPromptFromData(data, fileName) {
 
     // Vérifier la structure des données
     if (!Array.isArray(data.cards) || data.cards.length === 0) {
-        alert('Le fichier ne contient pas de données de prompt valides.');
+        coreModule.showToast('Le fichier ne contient pas de données de prompt valides.', 'error');
         return;
     }
 
@@ -313,7 +309,7 @@ function importPromptFromData(data, fileName) {
     // Sauvegarder le prompt importé
     savePromptDataUnderName(promptName);
 
-    alert(`Prompt "${promptName}" importé avec succès !`);
+    coreModule.showToast(`Prompt "${promptName}" importé avec succès !`, 'success');
 }
 
 // --- Gestion de l'interface utilisateur ---
@@ -479,14 +475,8 @@ function updateSavedPromptsSelect() {
 
     // Trier les prompts par favoris puis par date de modification
     const sortedPrompts = Object.entries(coreModule.storageData.prompts)
-        .sort(([nameA, dataA], [nameB, dataB]) => {
-            // Les favoris d'abord
-            if (dataA.isFavorite && !dataB.isFavorite) return -1;
-            if (!dataA.isFavorite && dataB.isFavorite) return 1;
-
-            // Puis par date de modification (les plus récents d'abord)
-            return new Date(dataB.updatedAt || 0) - new Date(dataA.updatedAt || 0);
-        });
+        .map(([name, data]) => data)
+        .sort(coreModule.comparePromptsByFavoriteAndUpdatedAtDesc);
 
     // Ajouter une option vide
     const defaultOption = document.createElement('option');
@@ -526,10 +516,10 @@ function updateSavedPromptsSelect() {
     const promptsGroup = document.createElement('optgroup');
     promptsGroup.label = 'Prompts enregistrés';
 
-    sortedPrompts.forEach(([name, data]) => {
+    sortedPrompts.forEach(data => {
         const option = document.createElement('option');
-        option.value = `prompt|${name}`;
-        option.textContent = `${data.isFavorite ? '★ ' : ''}${name}`;
+        option.value = `prompt|${data.name}`;
+        option.textContent = `${data.isFavorite ? '★ ' : ''}${data.name}`;
         promptsGroup.appendChild(option);
     });
 

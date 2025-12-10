@@ -365,13 +365,9 @@ function renderCards() {
     });
 }
 
-function updatePrompt() {
-    if (!promptOutput || !languageSelector) {
-        return;
-    }
-    const language = languageSelector.value;
+function generatePromptText(cardsToFormat, language) {
     const order = Array.from(paragraphCards).map(card => card.dataset.paragraph);
-    const sortedCards = [...cards].sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
+    const sortedCards = [...cardsToFormat].sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
     let promptText = '';
     if (language === 'markdown') {
         sortedCards.forEach(card => {
@@ -408,6 +404,15 @@ function updatePrompt() {
         });
         promptText = lines.join('\n');
     }
+    return promptText;
+}
+
+function updatePrompt() {
+    if (!promptOutput || !languageSelector) {
+        return;
+    }
+    const language = languageSelector.value;
+    const promptText = generatePromptText(cards, language);
     promptOutput.textContent = promptText;
     saveLastSession();
     updateQualityIndicator();
@@ -754,6 +759,17 @@ function findNextVariantName(baseName) {
     return trimmed + ' ' + maxIndex;
 }
 
+function comparePromptsByFavoriteAndUpdatedAtDesc(a, b) {
+    // Les favoris d'abord
+    if (a.isFavorite && !b.isFavorite) return -1;
+    if (!a.isFavorite && b.isFavorite) return 1;
+
+    // Puis par date de modification (les plus récents d'abord)
+    const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(0);
+    const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(0);
+    return dateB - dateA;
+}
+
 function ensurePromptName() {
     if (!promptNameInput) return '';
 
@@ -773,6 +789,34 @@ function ensurePromptName() {
     }
 
     return name;
+}
+
+function showToast(message, type = 'info') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    // Force reflow for animation
+    void toast.offsetWidth;
+    toast.classList.add('toast-show');
+
+    setTimeout(() => {
+        toast.classList.remove('toast-show');
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.parentElement.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
 }
 
 function initializeCoreModule() {
@@ -800,6 +844,9 @@ export {
     updateCardContent,
     renderCards,
     updatePrompt,
+    generatePromptText,
+    comparePromptsByFavoriteAndUpdatedAtDesc,
+    showToast,
     saveStorage,
     initializeCoreModule
 };
