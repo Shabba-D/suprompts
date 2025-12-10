@@ -216,7 +216,7 @@ function exportPrompt() {
         return;
     }
 
-    // TODO: Ideally replace window.prompt with a custom modal too,
+    // TODO: Ideally replace window.prompt with a custom modal too, 
     // but for now keeping it simple or using current name.
     // Let's use the current prompt name if available, or default.
     let defaultName = 'mon_prompt';
@@ -248,7 +248,7 @@ function exportPrompt() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-
+    
     coreModule.showToast('Export réussi !', 'success');
 }
 
@@ -329,13 +329,13 @@ function getTemplateDisplayName(templateId) {
     // For now, let's just use the ID or a hardcoded map if we wanted to be perfect.
     // But since the dropdown in main_prompts uses the same source, maybe we can look there?
     // No, that's complex. Let's just return the ID or formatting it.
-
+    
     // Quick fix: Try to find it in the saved-prompts-select if populated?
     if (savedPromptsSelect) {
         const option = savedPromptsSelect.querySelector(`option[value="template|${templateId}"]`);
         if (option) return option.textContent.trim();
     }
-
+    
     return templateId;
 }
 
@@ -816,7 +816,7 @@ function handleConfirmRename() {
             () => {
                 // Confirm action
                 savePromptDataUnderName(newName);
-
+                
                 if (hasOld && oldName !== newName) {
                     delete prompts[oldName];
                     coreModule.saveStorage();
