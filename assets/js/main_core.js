@@ -7,7 +7,6 @@ const promptOutput = document.getElementById('prompt-output');
 const languageSelector = document.getElementById('language');
 const copyPromptButton = document.getElementById('copy-prompt-btn');
 const copyFeedback = document.getElementById('copy-feedback');
-const templateSelector = document.getElementById('template-select');
 const completionIndicator = document.getElementById('completion-indicator');
 const analysisScoreElement = document.getElementById('analysis-score');
 const analysisRecommendationsElement = document.getElementById('analysis-recommendations');
@@ -47,6 +46,7 @@ const RECOMMENDED_SECTIONS = ['Goal', 'Context', 'Examples'];
 
 const TEMPLATES = {
     'simple-question': {
+        displayName: 'Question simple',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un assistant généraliste, clair, structuré et concis.',
@@ -58,6 +58,7 @@ const TEMPLATES = {
         }
     },
     'text-analysis': {
+        displayName: 'Analyse de texte',
         sections: ['Persona', 'Goal', 'Context', 'Examples', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un expert en analyse de texte, en synthèse et en communication écrite.',
@@ -70,6 +71,7 @@ const TEMPLATES = {
         }
     },
     'code-generation': {
+        displayName: 'Génération de code',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Examples', 'Tone'],
         presets: {
             Persona: 'Tu es un développeur senior qui écrit du code robuste, lisible et bien structuré.',
@@ -82,6 +84,7 @@ const TEMPLATES = {
         }
     },
     'agent-tool': {
+        displayName: 'Agent / outil',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un agent chargé d’utiliser des outils pour accomplir une mission donnée, de manière fiable et méthodique.',
@@ -93,6 +96,7 @@ const TEMPLATES = {
         }
     },
     'critic-harsh': {
+        displayName: 'Critique sévère',
         sections: ['Persona', 'Goal', 'Context', 'Audience', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un critique très exigeant, direct et sans complaisance.',
@@ -105,6 +109,7 @@ const TEMPLATES = {
         }
     },
     'critic-kind': {
+        displayName: 'Critique bienveillant',
         sections: ['Persona', 'Goal', 'Context', 'Audience', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un critique bienveillant et constructif.',
@@ -117,6 +122,7 @@ const TEMPLATES = {
         }
     },
     'devils-advocate': {
+        displayName: 'Avocat du diable',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu joues le rôle d’« avocat du diable » pour tester la solidité des idées.',
@@ -128,6 +134,7 @@ const TEMPLATES = {
         }
     },
     'tutor-socratic': {
+        displayName: 'Tuteur socratique',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un tuteur socratique qui aide l’utilisateur à réfléchir par lui-même.',
@@ -139,6 +146,7 @@ const TEMPLATES = {
         }
     },
     'coach-beginner': {
+        displayName: 'Coach pour débutant',
         sections: ['Persona', 'Goal', 'Context', 'Audience', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un coach qui accompagne un grand débutant sur le sujet.',
@@ -151,6 +159,7 @@ const TEMPLATES = {
         }
     },
     'constraints-checker': {
+        displayName: 'Vérificateur de contraintes',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un vérificateur de contraintes méticuleux.',
@@ -162,6 +171,7 @@ const TEMPLATES = {
         }
     },
     'clarity-reviewer': {
+        displayName: 'Relecteur de clarté',
         sections: ['Persona', 'Goal', 'Context', 'Audience', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu es un relecteur de clarté pour lecteur non expert.',
@@ -174,6 +184,7 @@ const TEMPLATES = {
         }
     },
     'bono-white-hat': {
+        displayName: 'Chapeau blanc (faits)',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu portes le chapeau blanc : tu te concentres uniquement sur les faits, les données et les éléments vérifiables.',
@@ -185,6 +196,7 @@ const TEMPLATES = {
         }
     },
     'bono-red-hat': {
+        displayName: 'Chapeau rouge (émotions)',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu portes le chapeau rouge : tu te concentres sur les émotions, intuitions et réactions subjectives.',
@@ -196,6 +208,7 @@ const TEMPLATES = {
         }
     },
     'bono-black-hat': {
+        displayName: 'Chapeau noir (risques)',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu portes le chapeau noir : tu cherches les risques, faiblesses et points de vigilance.',
@@ -207,6 +220,7 @@ const TEMPLATES = {
         }
     },
     'bono-yellow-hat': {
+        displayName: 'Chapeau jaune (bénéfices)',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu portes le chapeau jaune : tu cherches les bénéfices, opportunités et aspects positifs.',
@@ -218,6 +232,7 @@ const TEMPLATES = {
         }
     },
     'bono-green-hat': {
+        displayName: 'Chapeau vert (créativité)',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu portes le chapeau vert : tu te concentres sur la créativité, les alternatives et les idées nouvelles.',
@@ -229,6 +244,7 @@ const TEMPLATES = {
         }
     },
     'bono-blue-hat': {
+        displayName: 'Chapeau bleu (pilotage)',
         sections: ['Persona', 'Goal', 'Context', 'Constraints', 'Format', 'Tone'],
         presets: {
             Persona: 'Tu portes le chapeau bleu : tu pilotes le processus de réflexion et la prise de décision.',
@@ -695,18 +711,6 @@ function initCopyButton() {
     });
 }
 
-function initTemplateSelector() {
-    if (!templateSelector) {
-        return;
-    }
-    templateSelector.addEventListener('change', () => {
-        if (!templateSelector.value) {
-            return;
-        }
-        applyTemplate(templateSelector.value);
-    });
-}
-
 function initLanguageSelector() {
     if (!languageSelector) {
         return;
@@ -819,13 +823,73 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
+function showConfirm(message, onConfirm, options = {}) {
+    const modal = document.getElementById('confirm-modal');
+    const msgEl = document.getElementById('confirm-modal-message');
+    const cancelBtn = document.getElementById('confirm-modal-cancel');
+    const okBtn = document.getElementById('confirm-modal-ok');
+
+    if (!modal || !msgEl || !cancelBtn || !okBtn) {
+        // Fallback if modal elements missing
+        if (window.confirm(message)) {
+            onConfirm();
+        }
+        return;
+    }
+
+    msgEl.textContent = message;
+
+    // Optional: customize button style (e.g., danger)
+    if (options.isDanger) {
+        okBtn.classList.add('modal-btn-danger');
+        okBtn.classList.remove('modal-btn-confirm');
+    } else {
+        okBtn.classList.add('modal-btn-confirm');
+        okBtn.classList.remove('modal-btn-danger');
+    }
+
+    // Handlers
+    const close = () => {
+        modal.classList.remove('modal-open');
+        cleanup();
+    };
+
+    const handleCancel = () => {
+        if (options.onCancel && typeof options.onCancel === 'function') {
+            options.onCancel();
+        }
+        close();
+    };
+
+    const handleOk = () => {
+        onConfirm();
+        close();
+    };
+
+    const handleKey = (e) => {
+        if (e.key === 'Escape') handleCancel();
+    };
+
+    const cleanup = () => {
+        cancelBtn.removeEventListener('click', handleCancel);
+        okBtn.removeEventListener('click', handleOk);
+        document.removeEventListener('keydown', handleKey);
+    };
+
+    cancelBtn.addEventListener('click', handleCancel);
+    okBtn.addEventListener('click', handleOk);
+    document.addEventListener('keydown', handleKey);
+
+    modal.classList.add('modal-open');
+    okBtn.focus();
+}
+
 function initializeCoreModule() {
     loadStorage();
     initializeFromStorage();
     setupParagraphCardListeners();
     setupMobileTabs();
     initCopyButton();
-    initTemplateSelector();
     initLanguageSelector();
     initAnalysisToggle();
     updatePrompt();
@@ -835,7 +899,6 @@ function initializeCoreModule() {
 
 export {
     paragraphCards,
-    templateSelector,
     languageSelector,
     TEMPLATES,
     storageData,
@@ -847,6 +910,7 @@ export {
     generatePromptText,
     comparePromptsByFavoriteAndUpdatedAtDesc,
     showToast,
+    showConfirm,
     saveStorage,
     initializeCoreModule
 };

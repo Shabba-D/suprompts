@@ -146,14 +146,7 @@ function populateABTemplatesList() {
         input.addEventListener('change', handleABChoiceChange);
 
         const span = document.createElement('span');
-        let displayName = id;
-        if (coreModule.templateSelector) {
-            const option = coreModule.templateSelector.querySelector('option[value="' + id + '"]');
-            if (option && option.textContent) {
-                displayName = option.textContent.trim();
-            }
-        }
-        span.textContent = displayName;
+        span.textContent = template.displayName || id;
 
         label.appendChild(input);
         label.appendChild(span);

@@ -212,11 +212,19 @@ function toggleFavoriteByName(name) {
 
 function exportPrompt() {
     if (!coreModule.cards || coreModule.cards.length === 0) {
-        alert('Aucun prompt à exporter.');
+        coreModule.showToast('Aucun prompt à exporter.', 'info');
         return;
     }
 
-    const promptName = prompt('Nom du fichier (sans extension) :', 'mon_prompt');
+    // TODO: Ideally replace window.prompt with a custom modal too,
+    // but for now keeping it simple or using current name.
+    // Let's use the current prompt name if available, or default.
+    let defaultName = 'mon_prompt';
+    if (promptNameInput && promptNameInput.value) {
+        defaultName = promptNameInput.value.trim().replace(/[^a-z0-9_\-]/gi, '_');
+    }
+
+    const promptName = prompt('Nom du fichier (sans extension) :', defaultName);
     if (!promptName) {
         return;
     }
@@ -240,6 +248,8 @@ function exportPrompt() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+
+    coreModule.showToast('Export réussi !', 'success');
 }
 
 function importPromptFromFile(file) {
@@ -284,48 +294,49 @@ function importPromptFromData(data, fileName) {
     }
 
     // Demander confirmation avant d'importer
-    if (!confirm(`Importer le prompt "${promptName}" avec ${data.cards.length} sections ?`)) {
-        return;
-    }
+    coreModule.showConfirm(`Importer le prompt "${promptName}" avec ${data.cards.length} sections ?`, () => {
+        // Mettre à jour les cartes avec les données importées
+        const newCards = data.cards.map(card => ({
+            type: card.type,
+            content: card.content || '',
+            id: card.id || Date.now()
+        }));
 
-    // Mettre à jour les cartes avec les données importées
-    const newCards = data.cards.map(card => ({
-        type: card.type,
-        content: card.content || '',
-        id: card.id || Date.now()
-    }));
+        coreModule.cards.length = 0;
+        newCards.forEach(card => coreModule.cards.push(card));
 
-    coreModule.cards.length = 0;
-    newCards.forEach(card => coreModule.cards.push(card));
+        // Mettre à jour l'interface utilisateur
+        if (promptNameInput) {
+            promptNameInput.value = promptName;
+        }
 
-    // Mettre à jour l'interface utilisateur
-    if (promptNameInput) {
-        promptNameInput.value = promptName;
-    }
+        coreModule.renderCards();
+        coreModule.updatePrompt();
 
-    coreModule.renderCards();
-    coreModule.updatePrompt();
+        // Sauvegarder le prompt importé
+        savePromptDataUnderName(promptName);
 
-    // Sauvegarder le prompt importé
-    savePromptDataUnderName(promptName);
-
-    coreModule.showToast(`Prompt "${promptName}" importé avec succès !`, 'success');
+        coreModule.showToast(`Prompt "${promptName}" importé avec succès !`, 'success');
+    });
 }
 
 // --- Gestion de l'interface utilisateur ---
 
 function getTemplateDisplayName(templateId) {
-    let displayName = templateId;
+    // With template selector removed, we try to get a nice name from the TEMPLATES object if possible,
+    // or just return the ID formatted.
+    // Ideally we should store display names in the TEMPLATES object itself.
+    // For now, let's just use the ID or a hardcoded map if we wanted to be perfect.
+    // But since the dropdown in main_prompts uses the same source, maybe we can look there?
+    // No, that's complex. Let's just return the ID or formatting it.
 
-    if (coreModule && coreModule.templateSelector) {
-        const option = coreModule.templateSelector.querySelector('option[value="' + templateId + '"]');
-        if (option && option.textContent) {
-            displayName = option.textContent;
-        }
+    // Quick fix: Try to find it in the saved-prompts-select if populated?
+    if (savedPromptsSelect) {
+        const option = savedPromptsSelect.querySelector(`option[value="template|${templateId}"]`);
+        if (option) return option.textContent.trim();
     }
 
-    // Normaliser les espaces internes et couper les retours à la ligne
-    return displayName.replace(/\s+/g, ' ').trim();
+    return templateId;
 }
 
 function loadTemplateAsNewPrompt(templateId) {
@@ -406,7 +417,7 @@ function loadTemplateAsNewPrompt(templateId) {
 function handleSaveVersion() {
     const name = promptNameInput ? promptNameInput.value.trim() : '';
     if (!name) {
-        alert('Veuillez d\'abord sauvegarder le prompt avec un nom.');
+        coreModule.showToast('Veuillez d\'abord sauvegarder le prompt avec un nom.', 'error');
         return;
     }
 
@@ -444,7 +455,7 @@ function handleSaveVersion() {
     const variantName = baseName + ' ' + maxIndex;
 
     if (!variantName) {
-        alert('Impossible de créer une nouvelle version.');
+        coreModule.showToast('Impossible de créer une nouvelle version.', 'error');
         return;
     }
 
@@ -487,7 +498,7 @@ function updateSavedPromptsSelect() {
     // Ajouter les modèles (lecture seule)
     if (coreModule && coreModule.TEMPLATES) {
         const templatesGroup = document.createElement('optgroup');
-        templatesGroup.label = 'Modèles (lecture seule)';
+        templatesGroup.label = 'Modèles';
 
         Object.keys(coreModule.TEMPLATES).forEach(id => {
             const template = coreModule.TEMPLATES[id];
@@ -495,13 +506,7 @@ function updateSavedPromptsSelect() {
                 return;
             }
 
-            let displayName = id;
-            if (coreModule.templateSelector) {
-                const opt = coreModule.templateSelector.querySelector('option[value="' + id + '"]');
-                if (opt && opt.textContent) {
-                    displayName = opt.textContent.trim();
-                }
-            }
+            let displayName = template.displayName || id;
 
             const option = document.createElement('option');
             option.value = `template|${id}`;
@@ -567,11 +572,12 @@ function refreshPromptNameDatalist() {
 function handleSavePrompt() {
     const name = promptNameInput ? promptNameInput.value.trim() : '';
     if (!name) {
-        alert('Veuillez saisir un nom pour le prompt.');
+        coreModule.showToast('Veuillez saisir un nom pour le prompt.', 'error');
         return;
     }
 
     savePromptDataUnderName(name);
+    coreModule.showToast('Prompt sauvegardé.', 'success');
     coreModule.triggerActionButtonAnimation(savePromptButton);
 
     // Mettre à jour l'interface utilisateur
@@ -618,31 +624,29 @@ function handleDeletePrompt() {
         return;
     }
 
-    if (!confirm(`Supprimer définitivement le prompt "${parsed.name}" ?`)) {
-        return;
-    }
+    coreModule.showConfirm(`Supprimer définitivement le prompt "${parsed.name}" ?`, () => {
+        // Supprimer le prompt
+        delete coreModule.storageData.prompts[parsed.name];
+        coreModule.saveStorage();
 
-    // Supprimer le prompt
-    delete coreModule.storageData.prompts[parsed.name];
-    coreModule.saveStorage();
+        // Mettre à jour l'interface utilisateur
+        updateSavedPromptsSelect();
 
-    // Mettre à jour l'interface utilisateur
-    updateSavedPromptsSelect();
+        // Réinitialiser le champ de nom si c'était le prompt actuel
+        if (promptNameInput && promptNameInput.value === parsed.name) {
+            promptNameInput.value = '';
+        }
 
-    // Réinitialiser le champ de nom si c'était le prompt actuel
-    if (promptNameInput && promptNameInput.value === parsed.name) {
-        promptNameInput.value = '';
-    }
+        if (currentPromptName === parsed.name) {
+            currentPromptName = '';
+            clearRenameSuggestion();
+        }
 
-    if (currentPromptName === parsed.name) {
-        currentPromptName = '';
-        clearRenameSuggestion();
-    }
+        // Mettre à jour le bouton favori
+        updateFavoriteButton('');
 
-    // Mettre à jour le bouton favori
-    updateFavoriteButton('');
-
-    alert(`Le prompt "${parsed.name}" a été supprimé.`);
+        coreModule.showToast(`Le prompt "${parsed.name}" a été supprimé.`, 'success');
+    }, { isDanger: true });
 }
 
 function handleToggleFavorite() {
@@ -710,7 +714,11 @@ function ensureRenameSuggestionElements() {
 
     renameSuggestionContainer.style.display = 'none';
 
-    renameSuggestionButton.addEventListener('click', handleConfirmRename);
+    // Use mousedown to prevent blur event on input from firing first and hiding the button
+    renameSuggestionButton.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // Prevent focus loss from input (optional but good)
+        handleConfirmRename();
+    });
 }
 
 function clearRenameSuggestion() {
@@ -800,12 +808,36 @@ function handleConfirmRename() {
     }
 
     if (hasNew && newName !== oldName) {
-        const shouldReplace = window.confirm('Un prompt nommé "' + newName + '" existe déjà. Voulez-vous le remplacer par la version actuelle ?');
-        if (!shouldReplace) {
-            promptNameInput.value = oldName;
-            clearRenameSuggestion();
-            return;
-        }
+        // Need to refactor this to use showConfirm which is async (callback based)
+        // This is tricky because the original code was synchronous blocking.
+        // We will move the logic inside the confirmation callback.
+        coreModule.showConfirm(
+            `Un prompt nommé "${newName}" existe déjà. Voulez-vous le remplacer ?`,
+            () => {
+                // Confirm action
+                savePromptDataUnderName(newName);
+
+                if (hasOld && oldName !== newName) {
+                    delete prompts[oldName];
+                    coreModule.saveStorage();
+                    updateSavedPromptsSelect();
+                }
+
+                currentPromptName = newName;
+                clearRenameSuggestion();
+                coreModule.showToast(`Renommé en "${newName}"`, 'success');
+            },
+            {
+                onCancel: () => {
+                    // Reset the input value to the old name
+                    if (promptNameInput) {
+                        promptNameInput.value = oldName;
+                    }
+                    clearRenameSuggestion();
+                }
+            }
+        );
+        return;
     }
 
     savePromptDataUnderName(newName);
