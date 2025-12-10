@@ -662,3 +662,272 @@ select {
     gap: 6px;
     cursor: pointer;
 }
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 2000;
+    pointer-events: none;
+}
+
+.toast {
+    background-color: var(--card-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+    pointer-events: auto;
+}
+
+.toast.toast-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-success {
+    border-left: 4px solid #2ecc71;
+}
+
+.toast-error {
+    border-left: 4px solid #e74c3c;
+}
+
+.toast-info {
+    border-left: 4px solid var(--accent-color);
+}
+
+/* Modal Dialog */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.modal-overlay.modal-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(20px);
+    transition: transform 0.2s ease;
+}
+
+.modal-overlay.modal-open .modal-box {
+    transform: translateY(0);
+}
+
+.modal-header {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--primary-text);
+}
+
+.modal-body {
+    margin-bottom: 20px;
+    color: var(--secondary-text);
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    border: 1px solid transparent;
+}
+
+.modal-btn-cancel {
+    background-color: transparent;
+    color: var(--secondary-text);
+    border-color: var(--border-color);
+}
+
+.modal-btn-cancel:hover {
+    background-color: var(--button-bg);
+    color: var(--primary-text);
+}
+
+.modal-btn-confirm {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.modal-btn-confirm:hover {
+    background-color: #0062a3; /* Darker accent */
+}
+
+/* Specific danger style for confirm button if needed */
+.modal-btn-danger {
+    background-color: #c0392b;
+    color: white;
+}
+
+.modal-btn-danger:hover {
+    background-color: #a93226;
+}
+
+/* Prompt Manager Grid Layout */
+.prompt-manager-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    background-color: var(--card-bg); /* Use card bg for unity */
+    border-radius: 8px;
+    padding: 4px;
+}
+
+/* Rows */
+.prompt-header-row,
+.prompt-tools-row,
+.prompt-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Elements */
+.flex-grow {
+    flex: 1;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.primary-button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.primary-button:hover {
+    background-color: #0062a3;
+}
+
+.danger-button {
+    background-color: transparent;
+    border-color: #c0392b;
+    color: #e74c3c;
+}
+
+.danger-button:hover {
+    background-color: #c0392b;
+    color: white;
+}
+
+.icon-button {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--secondary-text);
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0;
+}
+
+.icon-button:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--primary-text);
+}
+
+.icon-button-label {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--secondary-text);
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin: 0; /* Override default label margin */
+}
+
+.icon-button-label:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--primary-text);
+}
+
+.divider-vertical {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+    margin: 0 4px;
+}
+
+.compact-select {
+    width: auto;
+    min-width: 80px;
+    padding: 8px;
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.select-group {
+    min-width: 0; /* Allow flex shrinking */
+}
+
+#saved-prompts-select {
+    width: 100%;
+    padding: 8px;
+    background-color: #333;
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-overflow: ellipsis;
+}
+
+/* Override existing margins if needed */
+.prompt-controls {
+    display: none; /* Hide old controls if any remain */
+}
