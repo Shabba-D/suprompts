@@ -947,7 +947,7 @@ select {
 }
 
 /* Specific adjustments for buttons to ensure alignment */
-.prompt-manager-grid .secondary-button, 
+.prompt-manager-grid .secondary-button,
 .prompt-manager-grid .primary-button {
     display: inline-flex;
     align-items: center;
