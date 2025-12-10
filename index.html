@@ -1,206 +1,188 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Optimiseur de prompts</title>
-        <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="icon" type="image/png" href="assets/imgs/suPrompt_fav.png">
-        <link rel="apple-touch-icon" href="assets/imgs/suPrompt_fav.png">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimiseur de prompts</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/png" href="assets/imgs/suPrompt_fav.png">
+    <link rel="apple-touch-icon" href="assets/imgs/suPrompt_fav.png">
+</head>
 
-    <body class="dark">
-        <header class="site-header">
-            <div class="site-header-inner">
-                <img src="assets/imgs/suPrompt_fav.png" alt="Logo Suprompts"
-                    class="site-logo">
-                <h1 class="site-title">Suprompts - Optimiseur de prompts</h1>
-            </div>
-        </header>
-        <div class="container">
-            <div class="mobile-tabs">
-                <button class="mobile-tab-button"
-                    data-target="sections">Sections</button>
-                <button class="mobile-tab-button"
-                    data-target="editor">Édition</button>
-                <button class="mobile-tab-button" data-target="prompt">Prompt
-                    final</button>
-            </div>
-            <div class="left-panel panel-active" data-panel-id="sections">
-                <h2>Sections</h2>
-                <div class="paragraph-cards">
-                    <div class="paragraph-card" data-paragraph="Persona"
-                        title="Exemple : Tu es un expert en marketing B2B qui conseille une PME.">
-                        <h3>Persona</h3>
-                        <p>Définis le persona de l’IA : quel rôle doit-elle
-                            jouer (expert, critique, enseignant, etc.) ?</p>
-                    </div>
-                    <div class="paragraph-card" data-paragraph="Goal"
-                        title="Exemple : Générer un plan d'article de blog en 5 sections.">
-                        <h3>Goal</h3>
-                        <p>Quel est l’objectif principal de ce prompt ? Que doit
-                            accomplir l’IA ?</p>
-                    </div>
-                    <div class="paragraph-card" data-paragraph="Context"
-                        title="Exemple : L'entreprise vend un SaaS aux agences de communication.">
-                        <h3>Context</h3>
-                        <p>Donne le contexte et les informations de base
-                            nécessaires à la tâche.</p>
-                    </div>
-                    <div class="paragraph-card" data-paragraph="Examples"
-                        title="Exemple : Question utilisateur → réponse attendue, ou entrée brute → sortie idéale.">
-                        <h3>Examples</h3>
-                        <p>Ajoute un ou plusieurs exemples d’entrées/sorties
-                            attendues.</p>
-                    </div>
-                    <div class="paragraph-card" data-paragraph="Audience"
-                        title="Exemple : Public de débutants sans jargon technique.">
-                        <h3>Audience</h3>
-                        <p>Indique pour quel public la réponse est destinée
-                            (débutants, experts, etc.).</p>
-                    </div>
-                    <div class="paragraph-card" data-paragraph="Constraints"
-                        title="Exemple : Réponse en moins de 10 phrases, ton neutre, pas de tableau.">
-                        <h3>Constraints</h3>
-                        <p>Fixe les règles et limites : ce que l’IA doit faire
-                            ou éviter de faire.</p>
-                    </div>
-                    <div class="paragraph-card" data-paragraph="Format"
-                        title="Exemple : Liste à puces Markdown avec titres de niveau 2.">
-                        <h3>Format</h3>
-                        <p>Précise le format de sortie (JSON, liste, tableau
-                            Markdown, etc.).</p>
-                    </div>
-                    <div class="paragraph-card" data-paragraph="Tone"
-                        title="Exemple : Ton amical, pédagogique et motivant.">
-                        <h3>Tone</h3>
-                        <p>Définis le ton de la réponse (formel, amical,
-                            académique, etc.).</p>
-                    </div>
+<body class="dark">
+    <header class="site-header">
+        <div class="site-header-inner">
+            <img src="assets/imgs/suPrompt_fav.png" alt="Logo Suprompts" class="site-logo">
+            <h1 class="site-title">Suprompts - Optimiseur de prompts</h1>
+        </div>
+    </header>
+    <div class="container">
+        <div class="mobile-tabs">
+            <button class="mobile-tab-button" data-target="sections">Sections</button>
+            <button class="mobile-tab-button" data-target="editor">Édition</button>
+            <button class="mobile-tab-button" data-target="prompt">Prompt
+                final</button>
+        </div>
+        <div class="left-panel panel-active" data-panel-id="sections">
+            <h2>Sections</h2>
+            <div class="paragraph-cards">
+                <div class="paragraph-card" data-paragraph="Persona" title="Exemple : Tu es un expert en marketing B2B qui conseille une PME.">
+                    <h3>Persona</h3>
+                    <p>Définis le persona de l’IA : quel rôle doit-elle
+                        jouer (expert, critique, enseignant, etc.) ?</p>
+                </div>
+                <div class="paragraph-card" data-paragraph="Goal" title="Exemple : Générer un plan d'article de blog en 5 sections.">
+                    <h3>Goal</h3>
+                    <p>Quel est l’objectif principal de ce prompt ? Que doit
+                        accomplir l’IA ?</p>
+                </div>
+                <div class="paragraph-card" data-paragraph="Context" title="Exemple : L'entreprise vend un SaaS aux agences de communication.">
+                    <h3>Context</h3>
+                    <p>Donne le contexte et les informations de base
+                        nécessaires à la tâche.</p>
+                </div>
+                <div class="paragraph-card" data-paragraph="Examples" title="Exemple : Question utilisateur → réponse attendue, ou entrée brute → sortie idéale.">
+                    <h3>Examples</h3>
+                    <p>Ajoute un ou plusieurs exemples d’entrées/sorties
+                        attendues.</p>
+                </div>
+                <div class="paragraph-card" data-paragraph="Audience" title="Exemple : Public de débutants sans jargon technique.">
+                    <h3>Audience</h3>
+                    <p>Indique pour quel public la réponse est destinée
+                        (débutants, experts, etc.).</p>
+                </div>
+                <div class="paragraph-card" data-paragraph="Constraints" title="Exemple : Réponse en moins de 10 phrases, ton neutre, pas de tableau.">
+                    <h3>Constraints</h3>
+                    <p>Fixe les règles et limites : ce que l’IA doit faire
+                        ou éviter de faire.</p>
+                </div>
+                <div class="paragraph-card" data-paragraph="Format" title="Exemple : Liste à puces Markdown avec titres de niveau 2.">
+                    <h3>Format</h3>
+                    <p>Précise le format de sortie (JSON, liste, tableau
+                        Markdown, etc.).</p>
+                </div>
+                <div class="paragraph-card" data-paragraph="Tone" title="Exemple : Ton amical, pédagogique et motivant.">
+                    <h3>Tone</h3>
+                    <p>Définis le ton de la réponse (formel, amical,
+                        académique, etc.).</p>
                 </div>
             </div>
-            <div class="center-panel" data-panel-id="editor">
-                <h2>Cartes</h2>
-                <div id="cards-container"></div>
-            </div>
-            <div class="right-panel" data-panel-id="prompt">
-                <h2>Prompt final</h2>
+        </div>
+        <div class="center-panel" data-panel-id="editor">
+            <h2>Cartes</h2>
+            <div id="cards-container"></div>
+        </div>
+        <div class="right-panel" data-panel-id="prompt">
+            <h2>Prompt final</h2>
 
-                <div class="prompt-manager-grid">
-                    <!-- Row 1: Header -->
-                    <div class="prompt-header-row">
-                        <input id="prompt-name-input" type="text" placeholder="Nom du prompt" class="flex-grow">
-                        <button id="favorite-prompt-btn" class="icon-button" title="Favori" aria-label="Ajouter aux favoris">☆</button>
-                        <button id="save-prompt-btn" class="primary-button action-button">Sauvegarder</button>
-                        <button id="save-version-btn" class="secondary-button action-button" title="Créer une version">v+</button>
-                    </div>
+            <div class="prompt-manager-grid">
+                <!-- Row 1: Header -->
+                <div class="prompt-header-row">
+                    <input id="prompt-name-input" type="text" placeholder="Nom du prompt" class="flex-grow">
+                    <button id="favorite-prompt-btn" class="icon-button" title="Favori" aria-label="Ajouter aux favoris">☆</button>
+                    <button id="save-prompt-btn" class="primary-button action-button">Sauvegarder</button>
+                    <button id="save-version-btn" class="secondary-button action-button" title="Créer une version">v+</button>
+                </div>
 
-                    <!-- Row 2: Management -->
-                    <div class="prompt-tools-row">
-                        <div class="select-group flex-grow">
-                            <select id="saved-prompts-select" class="full-width">
-                                <option value="">Charger un prompt ou modèle...</option>
-                            </select>
-                        </div>
-                        <button id="load-prompt-btn" class="secondary-button action-button" title="Charger le prompt sélectionné">Charger</button>
-                        <button id="delete-prompt-btn" class="secondary-button danger-button action-button" title="Supprimer le prompt sélectionné">Supprimer</button>
-                    </div>
-
-                    <!-- Row 3: Format & Actions -->
-                    <div class="prompt-actions-row">
-                        <select id="language" class="compact-select" title="Format de sortie">
-                            <option value="markdown">MD</option>
-                            <option value="xml">XML</option>
-                            <option value="json">JSON</option>
-                            <option value="yaml">YAML</option>
+                <!-- Row 2: Management -->
+                <div class="prompt-tools-row">
+                    <div class="select-group flex-grow">
+                        <select id="saved-prompts-select" class="full-width">
+                            <option value>Charger un prompt ou
+                                modèle...</option>
                         </select>
-
-                        <div class="divider-vertical"></div>
-
-                        <label class="icon-button-label secondary-button action-button" title="Importer une sauvegarde JSON">
-                            Importer <input id="import-prompt-input" type="file" accept="application/json" hidden>
-                        </label>
-                        <button id="export-prompt-btn" class="secondary-button action-button" title="Exporter une sauvegarde JSON">Exporter</button>
-
-                        <div class="divider-vertical"></div>
-
-                        <button id="ab-open-btn" class="secondary-button action-button">Comparer</button>
-                        <button id="copy-prompt-btn" class="primary-button action-button flex-grow">Copier</button>
                     </div>
-                    <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
+                    <button id="load-prompt-btn" class="secondary-button action-button" title="Charger le prompt sélectionné">Charger</button>
+                    <button id="delete-prompt-btn" class="secondary-button danger-button action-button" title="Supprimer le prompt sélectionné">Supprimer</button>
                 </div>
-                <div class="analysis-panel">
-                    <div class="analysis-header">
-                        <span>Qualité du prompt</span>
-                        <span id="analysis-score">Score&nbsp;: --/100</span>
-                        <button id="analysis-toggle"
-                            class="secondary-button analysis-toggle"
-                            type="button" aria-expanded="true">Masquer les
-                            conseils</button>
-                    </div>
-                    <span id="completion-indicator"></span>
-                    <ul id="analysis-recommendations"
-                        class="analysis-recommendations"></ul>
-                    <p class="analysis-note">Analyse locale (aucun appel
-                        externe). Prévue pour intégration API ultérieure.</p>
+
+                <!-- Row 3: Format & Actions -->
+                <div class="prompt-actions-row">
+                    <select id="language" class="compact-select" title="Format de sortie">
+                        <option value="markdown">MD</option>
+                        <option value="xml">XML</option>
+                        <option value="json">JSON</option>
+                        <option value="yaml">YAML</option>
+                    </select>
+
+                    <div class="divider-vertical"></div>
+
+                    <label class="icon-button-label secondary-button action-button" title="Importer une sauvegarde JSON">
+                        Importer <input id="import-prompt-input" type="file" accept="application/json" hidden>
+                    </label>
+                    <button id="export-prompt-btn" class="secondary-button action-button" title="Exporter une sauvegarde JSON">Exporter</button>
+
+                    <div class="divider-vertical"></div>
+
+                    <button id="ab-open-btn" class="secondary-button action-button">Comparer</button>
+                    <button id="copy-prompt-btn" class="primary-button action-button flex-grow">Copier</button>
                 </div>
-                <pre id="prompt-output"></pre>
+                <span id="copy-feedback" class="copy-feedback" aria-live="polite"></span>
             </div>
-        </div>
-        <div id="ab-overlay" class="ab-overlay ab-overlay-hidden">
-            <div class="ab-overlay-content">
-                <div class="ab-overlay-header">
-                    <h3>Comparaison de prompts</h3>
-                    <button id="ab-close-btn"
-                        class="secondary-button">Fermer</button>
+            <div class="analysis-panel">
+                <div class="analysis-header">
+                    <span>Qualité du prompt</span>
+                    <span id="analysis-score">Score&nbsp;: --/100</span>
+                    <button id="analysis-toggle" class="secondary-button analysis-toggle" type="button" aria-expanded="true">Masquer les
+                        conseils</button>
                 </div>
-                <div class="ab-overlay-body">
-                    <div class="ab-column ab-left-column">
-                        <h4>Prompt gauche (actif)</h4>
-                        <div id="ab-left-cards" class="ab-left-cards"></div>
-                    </div>
-                    <div class="ab-column ab-right-column">
-                        <h4>Prompt droite (lecture seule)</h4>
-                        <pre id="ab-right-prompt" class="ab-right-prompt"></pre>
-                        <button id="ab-apply-right-to-left"
-                            class="secondary-button">Remplacer gauche par
-                            droite</button>
-                    </div>
-                    <div class="ab-column ab-list-column">
-                        <h4>Prompts à comparer</h4>
-                        <div class="ab-list-group">
-                            <h5>Modèles</h5>
-                            <ul id="ab-templates-list"
-                                class="ab-prompts-list"></ul>
-                        </div>
-                        <div class="ab-list-group">
-                            <h5>Enregistrements</h5>
-                            <ul id="ab-named-prompts-list"
-                                class="ab-prompts-list"></ul>
-                        </div>
-                        <div class="ab-list-group">
-                            <h5>Versions du « sans nom »</h5>
-                            <ul id="ab-versions-list"
-                                class="ab-prompts-list"></ul>
-                        </div>
-                    </div>
-                </div>
+                <span id="completion-indicator"></span>
+                <ul id="analysis-recommendations" class="analysis-recommendations"></ul>
+                <p class="analysis-note">Analyse locale (aucun appel
+                    externe). Prévue pour intégration API ultérieure.</p>
             </div>
+            <pre id="prompt-output"></pre>
         </div>
-
-        <!-- Confirm Modal -->
-        <div id="confirm-modal" class="modal-overlay">
-            <div class="modal-box">
-                <div class="modal-header">Confirmation</div>
-                <div class="modal-body" id="confirm-modal-message"></div>
-                <div class="modal-footer">
-                    <button id="confirm-modal-cancel" class="modal-btn modal-btn-cancel">Annuler</button>
-                    <button id="confirm-modal-ok" class="modal-btn modal-btn-confirm">Confirmer</button>
+    </div>
+    <div id="ab-overlay" class="ab-overlay ab-overlay-hidden">
+        <div class="ab-overlay-content">
+            <div class="ab-overlay-header">
+                <h3>Comparaison de prompts</h3>
+                <button id="ab-close-btn" class="secondary-button">Fermer</button>
+            </div>
+            <div class="ab-overlay-body">
+                <div class="ab-column ab-left-column">
+                    <h4>Prompt gauche (actif)</h4>
+                    <div id="ab-left-cards" class="ab-left-cards"></div>
+                </div>
+                <div class="ab-column ab-right-column">
+                    <h4>Prompt droite (lecture seule)</h4>
+                    <pre id="ab-right-prompt" class="ab-right-prompt"></pre>
+                    <button id="ab-apply-right-to-left" class="secondary-button">Remplacer gauche par
+                        droite</button>
+                </div>
+                <div class="ab-column ab-list-column">
+                    <h4>Prompts à comparer</h4>
+                    <div class="ab-list-group">
+                        <h5>Modèles</h5>
+                        <ul id="ab-templates-list" class="ab-prompts-list"></ul>
+                    </div>
+                    <div class="ab-list-group">
+                        <h5>Enregistrements</h5>
+                        <ul id="ab-named-prompts-list" class="ab-prompts-list"></ul>
+                    </div>
+                    <div class="ab-list-group">
+                        <h5>Versions du « sans nom »</h5>
+                        <ul id="ab-versions-list" class="ab-prompts-list"></ul>
+                    </div>
                 </div>
             </div>
         </div>
-        <script src="assets/js/main_v2.js" type="module"></script>
-    </body>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">Confirmation</div>
+            <div class="modal-body" id="confirm-modal-message"></div>
+            <div class="modal-footer">
+                <button id="confirm-modal-cancel" class="modal-btn modal-btn-cancel">Annuler</button>
+                <button id="confirm-modal-ok" class="modal-btn modal-btn-confirm">Confirmer</button>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/main_v2.js" type="module"></script>
+</body>
 
 </html>

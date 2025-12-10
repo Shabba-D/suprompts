@@ -216,7 +216,7 @@ function exportPrompt() {
         return;
     }
 
-    // TODO: Ideally replace window.prompt with a custom modal too,
+    // TODO: Ideally replace window.prompt with a custom modal too, 
     // but for now keeping it simple or using current name.
     // Let's use the current prompt name if available, or default.
     let defaultName = 'mon_prompt';
@@ -646,7 +646,9 @@ function handleDeletePrompt() {
         updateFavoriteButton('');
 
         coreModule.showToast(`Le prompt "${parsed.name}" a été supprimé.`, 'success');
-    }, { isDanger: true });
+    }, {
+        isDanger: true
+    });
 }
 
 function handleToggleFavorite() {
@@ -826,8 +828,7 @@ function handleConfirmRename() {
                 currentPromptName = newName;
                 clearRenameSuggestion();
                 coreModule.showToast(`Renommé en "${newName}"`, 'success');
-            },
-            {
+            }, {
                 onCancel: () => {
                     // Reset the input value to the old name
                     if (promptNameInput) {
