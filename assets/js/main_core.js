@@ -229,6 +229,7 @@ function applyPromptTypeConfig() {
     UI.reorderParagraphCards(recommended);
     updateQualityIndicator();
     updateAnalysis();
+    renderCardsWrapper();
 }
 
 function setupPromptTypeSelector() {
