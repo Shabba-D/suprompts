@@ -16,8 +16,8 @@ export const PROMPT_TYPES = {
     },
     persona: {
         label: 'Personas',
-        recommendedSections: ['Persona', 'Goal', 'Location', 'Job', 'Constraints', 'Tone'],
-        visibleSections: ['Persona', 'Goal', 'Context', 'Examples', 'Audience', 'Constraints', 'Format', 'Tone', 'Location', 'Job']
+        recommendedSections: ['Persona', 'Goal', 'Localisation', 'Job', 'Constraints', 'Tone'],
+        visibleSections: ['Persona', 'Goal', 'Context', 'Examples', 'Audience', 'Constraints', 'Format', 'Tone', 'Localisation', 'Job']
     }
 };
 
@@ -247,7 +247,7 @@ export const PARAGRAPH_SECTIONS = [{
         tooltip: 'Exemple : Consultant marketing B2B, développeur backend senior, CEO.'
     },
     {
-        id: 'Location',
+        id: 'Localisation',
         label: 'Localisation',
         description: 'Indique la localisation, la langue principale ou le contexte culturel de la persona.',
         tooltip: 'Exemple : France, Québec, États-Unis, francophone, anglophone.'

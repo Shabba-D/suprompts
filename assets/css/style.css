@@ -267,7 +267,7 @@ h2 {
     content: '🎨';
 }
 
-.paragraph-card[data-paragraph="Location"] h3::before {
+.paragraph-card[data-paragraph="Localisation"] h3::before {
     content: '📍';
 }
 
