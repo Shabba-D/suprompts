@@ -2,8 +2,7 @@
 
 import {
     PROMPT_TYPES,
-    TEMPLATES,
-    PARAGRAPH_SECTIONS
+    TEMPLATES
 } from './prompt_data.js';
 
 import {
@@ -26,8 +25,10 @@ import {
     saveStorageData
 } from './core_storage.js';
 
-let paragraphCards = document.querySelectorAll('.paragraph-card');
+import * as UI from './core_ui.js';
+import { paragraphCards } from './core_ui.js';
 
+// DOM Elements
 const cardsContainer = document.getElementById('cards-container');
 const promptOutput = document.getElementById('prompt-output');
 const promptTypeSelector = document.getElementById('prompt-type-select');
@@ -45,11 +46,22 @@ const analysisToggleButton = document.getElementById('analysis-toggle');
 const advancedToolsWrapper = document.querySelector('.advanced-tools-wrapper');
 const advancedToolsHeader = document.querySelector('.advanced-tools-header');
 
-const mobileTabButtons = document.querySelectorAll('.mobile-tab-button');
 const leftPanelElement = document.querySelector('.left-panel');
 const centerPanelElement = document.querySelector('.center-panel');
 const rightPanelElement = document.querySelector('.right-panel');
 
+// State
+const STORAGE_KEY = 'suprompts_storage_v1';
+let currentPromptType = 'general';
+let storageData = {
+    lastSession: null,
+    prompts: {},
+    versions: {}
+};
+let cards = [];
+let copyFeedbackTimeoutId = null;
+
+// Initialization
 if (advancedToolsHeader && advancedToolsWrapper) {
     advancedToolsHeader.addEventListener('click', () => {
         const isOpen = advancedToolsWrapper.classList.toggle('advanced-tools-open');
@@ -57,38 +69,7 @@ if (advancedToolsHeader && advancedToolsWrapper) {
     });
 }
 
-function createParagraphCards() {
-    const container = document.querySelector('.paragraph-cards');
-    if (!container) {
-        return;
-    }
-    container.innerHTML = '';
-    PARAGRAPH_SECTIONS.forEach(section => {
-        const card = document.createElement('div');
-        card.className = 'paragraph-card';
-        card.dataset.paragraph = section.id;
-        if (section.tooltip) {
-            card.title = section.tooltip;
-        }
-
-        const titleElement = document.createElement('h3');
-        titleElement.textContent = section.label;
-        card.appendChild(titleElement);
-
-        const descriptionElement = document.createElement('p');
-        descriptionElement.textContent = section.description;
-        card.appendChild(descriptionElement);
-
-        container.appendChild(card);
-    });
-
-    paragraphCards = document.querySelectorAll('.paragraph-card');
-}
-
-createParagraphCards();
-
 document.addEventListener('click', event => {
-
     if (!advancedToolsWrapper || !advancedToolsWrapper.classList.contains('advanced-tools-open')) {
         return;
     }
@@ -102,29 +83,23 @@ document.addEventListener('click', event => {
     }
 });
 
-const STORAGE_KEY = 'suprompts_storage_v1';
+// Helper functions that bridge logic and UI
+function showCopyFeedbackWrapper(message, isError) {
+    if (copyFeedback) {
+        UI.showCopyFeedback(copyFeedback, message, isError);
+        clearTimeout(copyFeedbackTimeoutId);
+        copyFeedbackTimeoutId = setTimeout(() => {
+            copyFeedback.textContent = '';
+        }, 2000);
+    }
+}
 
-let currentPromptType = 'general';
-
-let storageData = {
-
-    lastSession: null,
-    prompts: {},
-    versions: {}
-};
-
-let cards = [];
-
-function showCopyFeedback(message, isError) {
-    if (!copyFeedback) {
+function updateCardContent(target, content) {
+    if (!target) {
         return;
     }
-    copyFeedback.textContent = message;
-    copyFeedback.style.color = isError ? '#e74c3c' : '';
-    clearTimeout(showCopyFeedback._timeoutId);
-    showCopyFeedback._timeoutId = setTimeout(() => {
-        copyFeedback.textContent = '';
-    }, 2000);
+    target.content = content;
+    updatePrompt();
 }
 
 function addCard(type) {
@@ -136,90 +111,18 @@ function addCard(type) {
         type: type,
         content: ''
     });
-    renderCards();
+    renderCardsWrapper();
     updatePrompt();
 }
 
 function removeCard(target) {
     cards = cards.filter(card => card !== target);
-    renderCards();
+    renderCardsWrapper();
     updatePrompt();
 }
 
-function updateCardContent(target, content) {
-    if (!target) {
-        return;
-    }
-    target.content = content;
-    updatePrompt();
-}
-
-function renderCards() {
-    const order = Array.from(paragraphCards).map(card => card.dataset.paragraph);
-    cards.sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
-    if (!cardsContainer) {
-        return;
-    }
-    cardsContainer.innerHTML = '';
-    cards.forEach(card => {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'card';
-
-        const titleElement = document.createElement('h3');
-        titleElement.textContent = card.type;
-        cardElement.appendChild(titleElement);
-
-        const textarea = document.createElement('textarea');
-        textarea.placeholder = 'Saisis le contenu pour ' + card.type + '...';
-        textarea.value = card.content || '';
-        cardElement.appendChild(textarea);
-
-        const footer = document.createElement('div');
-        footer.className = 'card-footer';
-
-        const charCount = document.createElement('span');
-        charCount.className = 'char-count';
-
-        const buttonsWrapper = document.createElement('div');
-
-        const clearButton = document.createElement('button');
-        clearButton.className = 'clear-btn';
-        clearButton.textContent = 'Vider';
-
-        const removeButton = document.createElement('button');
-        removeButton.className = 'remove-btn';
-        removeButton.textContent = 'Supprimer la carte';
-
-        buttonsWrapper.appendChild(clearButton);
-        buttonsWrapper.appendChild(removeButton);
-
-        footer.appendChild(charCount);
-        footer.appendChild(buttonsWrapper);
-
-        cardElement.appendChild(footer);
-        cardsContainer.appendChild(cardElement);
-
-        const updateCharCount = () => {
-            charCount.textContent = `${textarea.value.length} caractères`;
-        };
-
-        updateCharCount();
-
-        textarea.addEventListener('input', () => {
-            updateCardContent(card, textarea.value);
-            updateCharCount();
-        });
-
-        clearButton.addEventListener('click', () => {
-            textarea.value = '';
-            updateCardContent(card, '');
-            updateCharCount();
-        });
-
-        removeButton.addEventListener('click', () => {
-            removeCard(card);
-        });
-    });
+function renderCardsWrapper() {
+    UI.renderCards(cardsContainer, cards, updateCardContent, removeCard);
 }
 
 function updatePrompt() {
@@ -266,7 +169,7 @@ function initializeFromStorage() {
         if (storageData.lastSession.promptType && PROMPT_TYPES[storageData.lastSession.promptType]) {
             currentPromptType = storageData.lastSession.promptType;
         }
-        renderCards();
+        renderCardsWrapper();
         updatePrompt();
     }
 }
@@ -284,7 +187,7 @@ function applyTemplate(templateId) {
             content: content
         };
     });
-    renderCards();
+    renderCardsWrapper();
     updatePrompt();
 }
 
@@ -313,52 +216,15 @@ function getVisibleSections() {
     if (config && Array.isArray(config.visibleSections) && config.visibleSections.length > 0) {
         return config.visibleSections;
     }
-    if (!paragraphCards || paragraphCards.length === 0) {
-        return [];
-    }
-    return Array.from(paragraphCards)
-        .map(card => card.dataset.paragraph)
-        .filter(Boolean);
-}
-
-function updateVisibleParagraphCards() {
-    if (!paragraphCards || paragraphCards.length === 0) {
-        return;
-    }
-    const visible = getVisibleSections();
-    paragraphCards.forEach(card => {
-        const type = card.dataset.paragraph;
-        if (!type) {
-            return;
-        }
-        if (visible.includes(type)) {
-            card.classList.remove('paragraph-card-hidden');
-        } else {
-            card.classList.add('paragraph-card-hidden');
-        }
-    });
-}
-
-function updateRecommendedSectionBadges() {
-    if (!paragraphCards || paragraphCards.length === 0) {
-        return;
-    }
-    const recommended = getRecommendedSections();
-    paragraphCards.forEach(card => {
-        card.classList.remove('paragraph-card-recommended');
-    });
-    recommended.forEach(type => {
-        paragraphCards.forEach(card => {
-            if (card.dataset.paragraph === type) {
-                card.classList.add('paragraph-card-recommended');
-            }
-        });
-    });
+    // Fallback if no specific config
+    return UI.paragraphCards && UI.paragraphCards.length > 0
+        ? Array.from(UI.paragraphCards).map(card => card.dataset.paragraph).filter(Boolean)
+        : [];
 }
 
 function applyPromptTypeConfig() {
-    updateVisibleParagraphCards();
-    updateRecommendedSectionBadges();
+    UI.updateVisibleParagraphCards(getVisibleSections());
+    UI.updateRecommendedSectionBadges(getRecommendedSections());
     updateQualityIndicator();
     updateAnalysis();
 }
@@ -396,18 +262,11 @@ function setupPromptTypeSelector() {
 }
 
 function updateQualityIndicator() {
-    if (!completionIndicator) {
-        return;
-    }
     const byType = {};
     cards.forEach(card => {
         byType[card.type] = card;
     });
     const recommended = getRecommendedSections();
-    if (recommended.length === 0) {
-        completionIndicator.textContent = '';
-        return;
-    }
     let filled = 0;
     recommended.forEach(type => {
         const card = byType[type];
@@ -415,13 +274,10 @@ function updateQualityIndicator() {
             filled += 1;
         }
     });
-    completionIndicator.textContent = 'Complétude : ' + filled + '/' + recommended.length + ' sections recommandées remplies.';
+    UI.updateCompletionIndicator(completionIndicator, filled, recommended.length);
 }
 
 function updateAnalysis() {
-    if (!analysisScoreElement || !analysisRecommendationsElement) {
-        return;
-    }
     const recommendedSections = getRecommendedSections();
     const result = computeAnalysis(cards, recommendedSections);
     let score = typeof result.score === 'number' ? result.score : 0;
@@ -430,133 +286,42 @@ function updateAnalysis() {
     } else if (score > 100) {
         score = 100;
     }
-    analysisScoreElement.textContent = 'Score : ' + score + '/100';
-    analysisRecommendationsElement.innerHTML = '';
     const recommendations = Array.isArray(result.recommendations) ? result.recommendations : [];
-    if (recommendations.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'Le prompt semble bien structuré. Tu peux l’utiliser tel quel ou affiner des détails de style.';
-        analysisRecommendationsElement.appendChild(li);
-        return;
-    }
-    recommendations.forEach(text => {
-        const li = document.createElement('li');
-        li.textContent = text;
-        analysisRecommendationsElement.appendChild(li);
-    });
-}
-
-// Kept for backward compatibility if any external code calls it directly, though internal calls use the imported one.
-// Actually, `computeLocalAnalysis` was exported.
-// We can re-export a wrapper or just remove it if we are sure nobody calls it.
-// The audit said it's local analysis.
-// I'll make a wrapper to be safe as I see `computeLocalAnalysis` in the original exports.
-function computeLocalAnalysis() {
-    const recommendedSections = getRecommendedSections();
-    return computeAnalysis(cards, recommendedSections);
-}
-
-function setupParagraphCardListeners() {
-    if (!paragraphCards || paragraphCards.length === 0) {
-        return;
-    }
-    paragraphCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const type = card.dataset.paragraph;
-            if (!type) {
-                return;
-            }
-            addCard(type);
-        });
-    });
-}
-
-function setupMobileTabs() {
-    if (!mobileTabButtons || mobileTabButtons.length === 0) {
-        return;
-    }
-    mobileTabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const target = button.getAttribute('data-target');
-            if (!target) {
-                return;
-            }
-            document.querySelectorAll('.panel-active').forEach(panel => {
-                panel.classList.remove('panel-active');
-            });
-            if (target === 'sections' && leftPanelElement) {
-                leftPanelElement.classList.add('panel-active');
-            } else if (target === 'editor' && centerPanelElement) {
-                centerPanelElement.classList.add('panel-active');
-            } else if (target === 'prompt' && rightPanelElement) {
-                rightPanelElement.classList.add('panel-active');
-            }
-        });
-    });
-}
-
-function initCopyButton() {
-    if (!copyPromptButton) {
-        return;
-    }
-    copyPromptButton.addEventListener('click', async () => {
-        if (!promptOutput || !navigator.clipboard) {
-            showCopyFeedback('Copie non disponible.', true);
-            return;
-        }
-        try {
-            await navigator.clipboard.writeText(promptOutput.textContent || '');
-            showCopyFeedback('Prompt copié !');
-            triggerActionButtonAnimation(copyPromptButton);
-        } catch (e) {
-            showCopyFeedback('Impossible de copier.', true);
-        }
-    });
-}
-
-function initLanguageSelector() {
-    if (!languageSelector) {
-        return;
-    }
-    languageSelector.addEventListener('change', () => {
-        updatePrompt();
-    });
-}
-
-function initAnalysisToggle() {
-    if (!analysisToggleButton || !analysisPanel) {
-        return;
-    }
-    analysisToggleButton.addEventListener('click', () => {
-        const collapsed = analysisPanel.classList.toggle('analysis-collapsed');
-        analysisToggleButton.textContent = collapsed ? 'Afficher les conseils' : 'Masquer les conseils';
-        analysisToggleButton.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-    });
+    UI.updateAnalysisUI(analysisScoreElement, analysisRecommendationsElement, score, recommendations);
 }
 
 function initializeCoreModule() {
+    // UI Initialization
+    UI.createParagraphCards();
+    UI.setupParagraphCardListeners(addCard);
+    UI.setupMobileTabs(leftPanelElement, centerPanelElement, rightPanelElement);
+    UI.initCopyButton(copyPromptButton, promptOutput, showCopyFeedbackWrapper, triggerActionButtonAnimation);
+    UI.initAnalysisToggle(analysisToggleButton, analysisPanel);
+
+    // Logic Initialization
     loadStorage();
+    if (languageSelector) {
+        languageSelector.addEventListener('change', () => {
+            updatePrompt();
+        });
+    }
     initializeFromStorage();
-    setupParagraphCardListeners();
-    setupMobileTabs();
-    initCopyButton();
-    initLanguageSelector();
-    initAnalysisToggle();
     setupPromptTypeSelector();
     updatePrompt();
     updateAnalysis();
     updateQualityIndicator();
 }
 
+// Exports
 export {
-    paragraphCards,
     languageSelector,
     TEMPLATES,
     storageData,
     cards,
+    paragraphCards,
     triggerActionButtonAnimation,
     updateCardContent,
-    renderCards,
+    renderCardsWrapper as renderCards,
     updatePrompt,
     generatePromptText,
     comparePromptsByFavoriteAndUpdatedAtDesc,
