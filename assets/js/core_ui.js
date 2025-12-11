@@ -256,4 +256,35 @@ export function updateCompletionIndicator(indicatorElement, filledCount, totalCo
     indicatorElement.textContent = 'Complétude : ' + filledCount + '/' + totalCount + ' sections recommandées remplies.';
 }
 
+export function reorderParagraphCards(recommendedSections) {
+    const container = document.querySelector('.paragraph-cards');
+    if (!container) {
+        return;
+    }
+
+    // Get current cards (preserving existing DOM elements to keep event listeners)
+    const cardsArray = Array.from(document.querySelectorAll('.paragraph-card'));
+
+    // Sort logic: recommended first, maintaining original relative order within groups
+    const recommended = [];
+    const others = [];
+
+    cardsArray.forEach(card => {
+        const type = card.dataset.paragraph;
+        if (recommendedSections.includes(type)) {
+            recommended.push(card);
+        } else {
+            others.push(card);
+        }
+    });
+
+    // Re-append elements in the new order
+    [...recommended, ...others].forEach(card => {
+        container.appendChild(card);
+    });
+
+    // Update the internal reference
+    paragraphCards = document.querySelectorAll('.paragraph-card');
+}
+
 export { paragraphCards };
