@@ -75,7 +75,14 @@ function renderABLeftFromCards() {
 
     abLeftCardsContainer.innerHTML = '';
 
-    const order = Array.from(coreModule.paragraphCards).map(card => card.dataset.paragraph);
+    // Fix: Access paragraphCards from exported object or use a getter if possible.
+    // Since paragraphCards is a NodeList and we might not have direct access if it's not exported directly as a live binding,
+    // we should rely on coreModule to provide the order or list.
+    // However, looking at main_core.js, paragraphCards IS exported.
+
+    // Safety check in case paragraphCards is empty or undefined
+    const pCards = coreModule.paragraphCards || [];
+    const order = Array.from(pCards).map(card => card.dataset.paragraph);
     const sortedCards = [...coreModule.cards].sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
 
     sortedCards.forEach(card => {
