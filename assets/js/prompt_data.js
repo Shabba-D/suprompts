@@ -16,8 +16,8 @@ export const PROMPT_TYPES = {
     },
     persona: {
         label: 'Personas',
-        recommendedSections: ['Persona', 'Goal', 'Localisation', 'Job', 'Constraints', 'Tone'],
-        visibleSections: ['Persona', 'Goal', 'Context', 'Examples', 'Audience', 'Constraints', 'Format', 'Tone', 'Localisation', 'Job']
+        recommendedSections: ['Persona', 'Goal', 'Localisation', 'Travail', 'Constraints', 'Tone'],
+        visibleSections: ['Persona', 'Goal', 'Context', 'Examples', 'Audience', 'Constraints', 'Format', 'Tone', 'Localisation', 'Travail']
     }
 };
 
@@ -241,9 +241,9 @@ export const PARAGRAPH_SECTIONS = [{
         tooltip: 'Exemple : Tu es un expert en marketing B2B qui conseille une PME.'
     },
     {
-        id: 'Job',
-        label: 'Métier',
-        description: 'Précise le métier, le rôle ou la fonction principale de la persona.',
+        id: 'Travail',
+        label: 'Travail',
+        description: 'Précise le Travail, le rôle ou la fonction principale de la persona.',
         tooltip: 'Exemple : Consultant marketing B2B, développeur backend senior, CEO.'
     },
     {

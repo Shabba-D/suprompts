@@ -271,7 +271,7 @@ h2 {
     content: '📍';
 }
 
-.paragraph-card[data-paragraph="Job"] h3::before {
+.paragraph-card[data-paragraph="Travail"] h3::before {
     content: '💼';
 }
 
