@@ -224,7 +224,9 @@ function getVisibleSections() {
 
 function applyPromptTypeConfig() {
     UI.updateVisibleParagraphCards(getVisibleSections());
-    UI.updateRecommendedSectionBadges(getRecommendedSections());
+    const recommended = getRecommendedSections();
+    UI.updateRecommendedSectionBadges(recommended);
+    UI.reorderParagraphCards(recommended);
     updateQualityIndicator();
     updateAnalysis();
 }
