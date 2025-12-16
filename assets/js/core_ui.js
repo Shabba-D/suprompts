@@ -1,7 +1,7 @@
 // UI management module
 import {
-    PARAGRAPH_SECTIONS
-} from './prompt_data.js';
+    PROMPT_SECTIONS
+} from './core_i18n.js';
 
 // import {
 //     triggerActionButtonAnimation
@@ -15,10 +15,10 @@ export function createParagraphCards() {
         return;
     }
     container.innerHTML = '';
-    PARAGRAPH_SECTIONS.forEach(section => {
+    for (const [key, section] of Object.entries(PROMPT_SECTIONS)) {
         const card = document.createElement('div');
         card.className = 'paragraph-card';
-        card.dataset.paragraph = section.id;
+        card.dataset.paragraph = key; // Use the key (e.g., 'persona') as the identifier
         if (section.tooltip) {
             card.title = section.tooltip;
         }
@@ -32,7 +32,7 @@ export function createParagraphCards() {
         card.appendChild(descriptionElement);
 
         container.appendChild(card);
-    });
+    }
 
     paragraphCards = document.querySelectorAll('.paragraph-card');
 }
@@ -122,12 +122,16 @@ export function renderCards(cardsContainer, cards, updateCardContentCallback, re
         const cardElement = document.createElement('div');
         cardElement.className = 'card';
 
+        const sectionInfo = PROMPT_SECTIONS[card.type] || {
+            label: card.type
+        }; // Fallback for safety
+
         const titleElement = document.createElement('h3');
-        titleElement.textContent = card.type;
+        titleElement.textContent = sectionInfo.label;
         cardElement.appendChild(titleElement);
 
         const textarea = document.createElement('textarea');
-        textarea.placeholder = 'Saisis le contenu pour ' + card.type + '...';
+        textarea.placeholder = 'Saisis le contenu pour ' + sectionInfo.label + '...';
         textarea.value = card.content || '';
         cardElement.appendChild(textarea);
 

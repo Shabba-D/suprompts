@@ -1,10 +1,10 @@
 :root {
     --background: #121113;
-    --foreground: #c1c1c1;
+    --foreground: #ddd;
     --card: #121212;
-    --card-foreground: #c1c1c1;
+    --card-foreground: #ddd;
     --popover: #121113;
-    --popover-foreground: #c1c1c1;
+    --popover-foreground: #ddd;
     --primary: #e78a53;
     --primary-foreground: #121113;
     --secondary: #5f8787;
@@ -12,7 +12,7 @@
     --muted: #222222;
     --muted-foreground: #888888;
     --accent: #333333;
-    --accent-foreground: #c1c1c1;
+    --accent-foreground: #ddd;
     --destructive: #5f8787;
     --destructive-foreground: #121113;
     --border: #222222;
@@ -24,11 +24,11 @@
     --chart-4: #888888;
     --chart-5: #999999;
     --sidebar: #121212;
-    --sidebar-foreground: #c1c1c1;
+    --sidebar-foreground: #ddd;
     --sidebar-primary: #e78a53;
     --sidebar-primary-foreground: #121113;
     --sidebar-accent: #333333;
-    --sidebar-accent-foreground: #c1c1c1;
+    --sidebar-accent-foreground: #ddd;
     --sidebar-border: #222222;
     --sidebar-ring: #e78a53;
     --font-sans: Geist Mono, ui-monospace, monospace;

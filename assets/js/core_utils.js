@@ -1,6 +1,6 @@
 import {
-    PARAGRAPH_SECTIONS
-} from './prompt_data.js';
+    PROMPT_SECTIONS
+} from './core_i18n.js';
 
 /**
  * Triggers a simple animation on an action button.
@@ -22,13 +22,14 @@ function triggerActionButtonAnimation(button) {
  * @returns {string} The generated prompt text.
  */
 function generatePromptText(cardsToFormat, language) {
-    const order = PARAGRAPH_SECTIONS.map(section => section.id);
+    const order = Object.keys(PROMPT_SECTIONS);
     const sortedCards = [...cardsToFormat].sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
     let promptText = '';
     if (language === 'markdown') {
         sortedCards.forEach(card => {
             if (card.content) {
-                promptText += `## ${card.type}\n\n${card.content}\n\n`;
+                const sectionLabel = (PROMPT_SECTIONS[card.type] && PROMPT_SECTIONS[card.type].label) || card.type;
+                promptText += `## ${sectionLabel}\n\n${card.content}\n\n`;
             }
         });
     } else if (language === 'xml') {
