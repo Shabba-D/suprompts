@@ -216,40 +216,38 @@ function exportPrompt() {
         return;
     }
 
-    // TODO: Ideally replace window.prompt with a custom modal too, 
-    // but for now keeping it simple or using current name.
-    // Let's use the current prompt name if available, or default.
     let defaultName = 'mon_prompt';
     if (promptNameInput && promptNameInput.value) {
         defaultName = promptNameInput.value.trim().replace(/[^a-z0-9_\-]/gi, '_');
     }
 
-    const promptName = prompt('Nom du fichier (sans extension) :', defaultName);
-    if (!promptName) {
-        return;
-    }
+    coreModule.showInput('Nom du fichier (sans extension) :', defaultName, (promptName) => {
+        if (!promptName) {
+            return;
+        }
 
-    const data = {
-        name: promptName,
-        version: '1.0',
-        cards: coreModule.cards,
-        exportedAt: new Date().toISOString()
-    };
+        const data = {
+            name: promptName,
+            version: '1.0',
+            cards: coreModule.cards,
+            exportedAt: new Date().toISOString()
+        };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: 'application/json'
+        const blob = new Blob([JSON.stringify(data, null, 2)], {
+            type: 'application/json'
+        });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${promptName}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        coreModule.showToast('Export réussi !', 'success');
     });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${promptName}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    coreModule.showToast('Export réussi !', 'success');
 }
 
 function importPromptFromFile(file) {
@@ -323,14 +321,6 @@ function importPromptFromData(data, fileName) {
 // --- Gestion de l'interface utilisateur ---
 
 function getTemplateDisplayName(templateId) {
-    // With template selector removed, we try to get a nice name from the TEMPLATES object if possible,
-    // or just return the ID formatted.
-    // Ideally we should store display names in the TEMPLATES object itself.
-    // For now, let's just use the ID or a hardcoded map if we wanted to be perfect.
-    // But since the dropdown in main_prompts uses the same source, maybe we can look there?
-    // No, that's complex. Let's just return the ID or formatting it.
-
-    // Quick fix: Try to find it in the saved-prompts-select if populated?
     if (savedPromptsSelect) {
         const option = savedPromptsSelect.querySelector(`option[value="template|${templateId}"]`);
         if (option) return option.textContent.trim();
@@ -681,7 +671,9 @@ function handleImportPrompt(event) {
     event.target.value = '';
 
     importPromptFromFile(file);
-    coreModule.triggerActionButtonAnimation(importPromptButton);
+    // Note: importPromptButton doesn't exist as a direct button ID, but as a label wrapper.
+    // The animation on the label might not work if targeting the input.
+    // We can animate the label if we want, but it's fine as is.
 }
 
 function ensureRenameSuggestionElements() {
@@ -810,9 +802,6 @@ function handleConfirmRename() {
     }
 
     if (hasNew && newName !== oldName) {
-        // Need to refactor this to use showConfirm which is async (callback based)
-        // This is tricky because the original code was synchronous blocking.
-        // We will move the logic inside the confirmation callback.
         coreModule.showConfirm(
             `Un prompt nommé "${newName}" existe déjà. Voulez-vous le remplacer ?`,
             () => {

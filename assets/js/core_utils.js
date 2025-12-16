@@ -148,6 +148,7 @@ function showConfirm(message, onConfirm, options = {}) {
     // Handlers
     const close = () => {
         modal.classList.remove('modal-open');
+        modal.setAttribute('aria-hidden', 'true');
         cleanup();
     };
 
@@ -165,6 +166,7 @@ function showConfirm(message, onConfirm, options = {}) {
 
     const handleKey = (e) => {
         if (e.key === 'Escape') handleCancel();
+        if (e.key === 'Enter') handleOk();
     };
 
     const cleanup = () => {
@@ -178,7 +180,75 @@ function showConfirm(message, onConfirm, options = {}) {
     document.addEventListener('keydown', handleKey);
 
     modal.classList.add('modal-open');
+    modal.setAttribute('aria-hidden', 'false');
     okBtn.focus();
+}
+
+/**
+ * Shows an input modal.
+ * @param {string} message - The message/prompt to display.
+ * @param {string} initialValue - The initial value of the input.
+ * @param {Function} onConfirm - The callback function to execute on confirmation (receives the value).
+ * @param {Object} options - Additional options (onCancel).
+ */
+function showInput(message, initialValue, onConfirm, options = {}) {
+    const modal = document.getElementById('input-modal');
+    const msgEl = document.getElementById('input-modal-message');
+    const inputEl = document.getElementById('input-modal-input');
+    const cancelBtn = document.getElementById('input-modal-cancel');
+    const okBtn = document.getElementById('input-modal-ok');
+
+    if (!modal || !msgEl || !inputEl || !cancelBtn || !okBtn) {
+        // Fallback if modal elements missing
+        const result = window.prompt(message, initialValue);
+        if (result !== null) {
+            onConfirm(result);
+        }
+        return;
+    }
+
+    msgEl.textContent = message;
+    inputEl.value = initialValue || '';
+
+    // Handlers
+    const close = () => {
+        modal.classList.remove('modal-open');
+        modal.setAttribute('aria-hidden', 'true');
+        cleanup();
+    };
+
+    const handleCancel = () => {
+        if (options.onCancel && typeof options.onCancel === 'function') {
+            options.onCancel();
+        }
+        close();
+    };
+
+    const handleOk = () => {
+        const val = inputEl.value;
+        onConfirm(val);
+        close();
+    };
+
+    const handleKey = (e) => {
+        if (e.key === 'Escape') handleCancel();
+        if (e.key === 'Enter') handleOk();
+    };
+
+    const cleanup = () => {
+        cancelBtn.removeEventListener('click', handleCancel);
+        okBtn.removeEventListener('click', handleOk);
+        document.removeEventListener('keydown', handleKey);
+    };
+
+    cancelBtn.addEventListener('click', handleCancel);
+    okBtn.addEventListener('click', handleOk);
+    document.addEventListener('keydown', handleKey);
+
+    modal.classList.add('modal-open');
+    modal.setAttribute('aria-hidden', 'false');
+    inputEl.focus();
+    inputEl.select();
 }
 
 /**
@@ -250,6 +320,7 @@ export {
     comparePromptsByFavoriteAndUpdatedAtDesc,
     showToast,
     showConfirm,
+    showInput,
     getBaseNameFromPromptName,
     findNextVariantName,
     ensureUniquePromptName

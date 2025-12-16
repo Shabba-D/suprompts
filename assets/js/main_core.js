@@ -11,6 +11,7 @@ import {
     comparePromptsByFavoriteAndUpdatedAtDesc,
     showToast,
     showConfirm,
+    showInput,
     getBaseNameFromPromptName,
     findNextVariantName,
     ensureUniquePromptName
@@ -330,6 +331,7 @@ export {
     comparePromptsByFavoriteAndUpdatedAtDesc,
     showToast,
     showConfirm,
+    showInput,
     getBaseNameFromPromptName,
     findNextVariantName,
     ensureUniquePromptName,
