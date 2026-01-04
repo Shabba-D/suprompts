@@ -16,6 +16,7 @@ Application web pour créer des prompts optimisés pour différents modèles d'I
 - **Gemini** (Google) - Flexible, bon en créativité
 - **Mistral** - Préfère Markdown, efficace
 - **LLaMA** (Meta) - Open-source, préfère le texte structuré
+- **DeepSeek** - Format structuré, bon rapport qualité/prix
 
 ### Techniques de prompting
 
@@ -33,6 +34,37 @@ Application web pour créer des prompts optimisés pour différents modèles d'I
 - XML
 - JSON
 - YAML
+
+### 👤 Système de Personas
+
+#### Bibliothèque de personas
+
+Personas prêts à l'emploi organisés par catégorie :
+
+- **Développement** : Senior Dev, Code Reviewer, Architecte...
+- **Business** : Consultant, Analyste, Stratège...
+- **Créatif** : Rédacteur, UX Designer, Storyteller...
+- **Analyse** : Data Analyst, Chercheur, Auditeur...
+- **Éducation** : Formateur, Mentor, Vulgarisateur...
+
+#### Builder de personas
+
+Créez vos propres personas avec 4 dimensions :
+
+- **Style** : Formel, Décontracté, Académique, Direct...
+- **Expertise** : Technique, Business, Créatif, Scientifique...
+- **Comportement** : Analytique, Créatif, Pragmatique...
+- **Expérience** : Junior, Confirmé, Senior, Expert...
+
+#### Formats adaptés aux modèles
+
+Le builder génère automatiquement le prompt persona dans le format optimal :
+
+- **Claude** → XML structuré avec balises `<persona>`
+- **GPT** → System message Markdown
+- **Gemini** → Markdown avec emojis
+- **Llama/Mistral** → Format direct explicite
+- **DeepSeek** → Format structuré numéroté
 
 ## 📖 Guide d'utilisation
 
@@ -101,6 +133,17 @@ Cliquez sur "Copier" pour copier le prompt optimisé dans votre presse-papiers.
 - **Pas de serveur requis** : Application 100% client-side
 
 ## 📝 Changelog
+
+### v3.0 - Système de Personas
+
+- ✅ Bibliothèque de personas prédéfinis (6 catégories)
+- ✅ Builder de personas personnalisés (4 dimensions)
+- ✅ Sauvegarde des personas personnalisés (localStorage)
+- ✅ Modification/Suppression des personas personnalisés
+- ✅ Formats de persona adaptés par modèle (Claude, GPT, Gemini, Llama, DeepSeek)
+- ✅ Détection automatique du format selon le modèle sélectionné
+- ✅ Support de DeepSeek
+- ✅ Corrections de sécurité (XSS, validation des imports)
 
 ### v2.0 - Phase 4 complète
 
