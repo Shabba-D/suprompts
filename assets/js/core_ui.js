@@ -104,6 +104,12 @@ export function initAnalysisToggle(analysisToggleButton, analysisPanel) {
     if (!analysisToggleButton || !analysisPanel) {
         return;
     }
+
+    // Synchronize button text with initial panel state
+    const isCollapsed = analysisPanel.classList.contains('analysis-collapsed');
+    analysisToggleButton.textContent = isCollapsed ? 'Afficher les conseils' : 'Masquer les conseils';
+    analysisToggleButton.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+
     analysisToggleButton.addEventListener('click', () => {
         const collapsed = analysisPanel.classList.toggle('analysis-collapsed');
         analysisToggleButton.textContent = collapsed ? 'Afficher les conseils' : 'Masquer les conseils';
@@ -221,7 +227,11 @@ export function showCopyFeedback(copyFeedback, message, isError) {
         return;
     }
     copyFeedback.textContent = message;
-    copyFeedback.style.color = isError ? '#e74c3c' : '';
+    if (isError) {
+        copyFeedback.classList.add('error-text');
+    } else {
+        copyFeedback.classList.remove('error-text');
+    }
     // Note: timeout handling is better done in a wrapper or state manager if possible,
     // but here we can just set it. To manage clearing previous timeouts,
     // the caller might need to handle the state.
@@ -291,4 +301,6 @@ export function reorderParagraphCards(recommendedSections) {
     paragraphCards = document.querySelectorAll('.paragraph-card');
 }
 
-export { paragraphCards };
+export {
+    paragraphCards
+};

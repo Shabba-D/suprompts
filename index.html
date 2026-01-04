@@ -27,10 +27,57 @@
         </div>
         <div class="left-panel panel-active" data-panel-id="sections">
             <h2>Sections</h2>
-            <div class="prompt-type-selector">
-                <label for="prompt-type-select">Type de
-                    prompt&nbsp;:</label>
-                <select id="prompt-type-select" aria-label="Sélectionner le type de prompt"></select>
+            <div class="selectors-group">
+                <div class="mode-toggle selector-item">
+                    <span class="selector-icon">⚙️</span>
+                    <label for="mode-select">Mode</label>
+                    <select id="mode-select" aria-label="Sélectionner le mode d'interface">
+                        <option value="simple">Simple</option>
+                        <option value="advanced">Avancé</option>
+                    </select>
+                    <span class="help-tooltip" data-tooltip="Simple : interface épurée pour débutants. Avancé : tous les contrôles visibles.">?</span>
+                </div>
+                <div class="selector-divider"></div>
+                <div class="model-selector selector-item">
+                    <span class="selector-icon">🤖</span>
+                    <label for="model-select">Modèle</label>
+                    <select id="model-select" aria-label="Sélectionner le modèle d'IA"></select>
+                    <button id="model-info-btn" class="model-info-btn" aria-label="Informations sur le modèle" title="Voir les recommandations pour ce modèle">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M8 7V11M8 5V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="prompt-type-selector selector-item">
+                    <span class="selector-icon">📝</span>
+                    <label for="prompt-type-select">Type</label>
+                    <select id="prompt-type-select" aria-label="Sélectionner le type de prompt"></select>
+                    <span class="help-tooltip" data-tooltip="Général, Créatif, Technique ou Avancé. Définit les sections recommandées.">?</span>
+                </div>
+                <div class="technique-selector selector-item">
+                    <span class="selector-icon">🎯</span>
+                    <label for="technique-select">Technique</label>
+                    <select id="technique-select" aria-label="Sélectionner la technique de prompting"></select>
+                    <button id="technique-info-btn" class="model-info-btn" aria-label="Informations sur la technique" title="Voir les détails de cette technique">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M8 7V11M8 5V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="selector-divider"></div>
+                <div class="persona-selector selector-item">
+                    <span class="selector-icon">👤</span>
+                    <label>Persona</label>
+                    <button id="persona-library-btn" class="secondary-button persona-btn" type="button">
+                        Bibliothèque
+                    </button>
+                    <button id="persona-builder-btn" class="secondary-button persona-btn" type="button">
+                        Builder
+                    </button>
+                    <span class="help-tooltip" data-tooltip="Bibliothèque : personas prêts à l'emploi. Builder : créez votre persona personnalisé.">?</span>
+                </div>
             </div>
             <div class="paragraph-cards"></div>
         </div>
@@ -114,7 +161,8 @@
                 <div class="ab-column ab-right-column">
                     <h4>Prompt droite (lecture seule)</h4>
                     <pre id="ab-right-prompt" class="ab-right-prompt"></pre>
-                    <button id="ab-apply-right-to-left" class="secondary-button" aria-label="Remplacer le prompt de gauche par celui de droite">Remplacer gauche par
+                    <button id="ab-apply-right-to-left" class="secondary-button" aria-label="Remplacer le prompt de gauche par celui de droite">Remplacer
+                        gauche par
                         droite</button>
                 </div>
                 <div class="ab-column ab-list-column">
@@ -151,10 +199,11 @@
     <!-- Input Modal -->
     <div id="input-modal" class="modal-overlay" aria-hidden="true">
         <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="input-modal-header">
-            <div id="input-modal-header" class="modal-header">Saisie requise</div>
+            <div id="input-modal-header" class="modal-header">Saisie
+                requise</div>
             <div class="modal-body">
-                <p id="input-modal-message" style="margin-bottom: 10px;"></p>
-                <input type="text" id="input-modal-input" class="full-width" style="padding: 8px; width: 100%;">
+                <p id="input-modal-message"></p>
+                <input type="text" id="input-modal-input" class="full-width">
             </div>
             <div class="modal-footer">
                 <button id="input-modal-cancel" class="modal-btn modal-btn-cancel">Annuler</button>
@@ -162,6 +211,197 @@
             </div>
         </div>
     </div>
+
+    <div id="model-info-modal" class="model-info-modal">
+        <div class="model-info-content">
+            <div class="model-info-header">
+                <div>
+                    <h2 class="model-info-title" id="model-info-name"></h2>
+                    <div class="model-info-vendor" id="model-info-vendor"></div>
+                </div>
+                <button class="model-info-close" id="model-info-close" aria-label="Fermer">&times;</button>
+            </div>
+
+            <div class="model-info-section">
+                <h3>📋 Format préféré</h3>
+                <p id="model-info-format"></p>
+            </div>
+
+            <div class="model-info-section">
+                <h3>🎯 Techniques supportées</h3>
+                <ul id="model-info-techniques"></ul>
+            </div>
+
+            <div class="model-info-section">
+                <h3>💡 Instructions spéciales</h3>
+                <p id="model-info-instructions"></p>
+            </div>
+
+            <div class="model-info-section">
+                <h3>⚙️ Notes de formatage</h3>
+                <div id="model-info-format-notes"></div>
+            </div>
+
+            <div class="model-info-section">
+                <h3>📊 Limite de tokens</h3>
+                <p id="model-info-tokens"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="technique-info-modal" class="model-info-modal">
+        <div class="model-info-content">
+            <div class="model-info-header">
+                <div>
+                    <h2 class="model-info-title" id="technique-info-name"></h2>
+                </div>
+                <button class="model-info-close" id="technique-info-close" aria-label="Fermer">&times;</button>
+            </div>
+
+            <div class="model-info-section">
+                <h3>📖 Description</h3>
+                <p id="technique-info-description"></p>
+            </div>
+
+            <div class="model-info-section">
+                <h3>✅ Sections requises</h3>
+                <ul id="technique-info-required"></ul>
+            </div>
+
+            <div class="model-info-section">
+                <h3>➕ Sections optionnelles</h3>
+                <ul id="technique-info-optional"></ul>
+            </div>
+
+            <div class="model-info-section">
+                <h3>🤖 Modèles compatibles</h3>
+                <p id="technique-info-models"></p>
+            </div>
+
+            <div class="model-info-section">
+                <h3>💼 Cas d'usage</h3>
+                <ul id="technique-info-usecases"></ul>
+            </div>
+
+            <div class="model-info-section" id="technique-info-bestpractices-section">
+                <h3>💡 Conseils pour ce modèle</h3>
+                <ul id="technique-info-bestpractices"></ul>
+                <p id="technique-info-tip" class="technique-tip"></p>
+            </div>
+
+            <button id="technique-apply-template" class="primary-button technique-apply-btn">
+                Appliquer ce template
+            </button>
+        </div>
+    </div>
+
+    <!-- Persona Library Modal -->
+    <div id="persona-library-modal" class="model-info-modal persona-modal">
+        <div class="model-info-content persona-modal-content">
+            <div class="model-info-header">
+                <div>
+                    <h2 class="model-info-title">📚 Bibliothèque de
+                        Personas</h2>
+                </div>
+                <button class="model-info-close" id="persona-library-close" aria-label="Fermer">&times;</button>
+            </div>
+
+            <div class="persona-search-bar">
+                <input type="text" id="persona-search" placeholder="Rechercher un persona..." class="full-width">
+            </div>
+
+            <div class="persona-categories" id="persona-categories"></div>
+
+            <div class="persona-list" id="persona-list"></div>
+
+            <div class="persona-preview" id="persona-preview">
+                <h3 id="persona-preview-name"></h3>
+                <p id="persona-preview-description"></p>
+                <div class="persona-dimensions" id="persona-preview-dimensions"></div>
+                <pre id="persona-preview-prompt" class="persona-prompt-preview"></pre>
+                <button id="persona-apply-btn" class="primary-button full-width">
+                    Appliquer ce persona
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Persona Builder Modal -->
+    <div id="persona-builder-modal" class="model-info-modal persona-modal">
+        <div class="model-info-content persona-modal-content">
+            <div class="model-info-header">
+                <div>
+                    <h2 class="model-info-title">🛠️ Builder de Persona</h2>
+                </div>
+                <button class="model-info-close" id="persona-builder-close" aria-label="Fermer">&times;</button>
+            </div>
+
+            <div class="persona-builder-form">
+                <div class="persona-dimension-group">
+                    <label>✏️ Nom du persona</label>
+                    <input type="text" id="builder-name" placeholder="Ex: Mon Expert Python" class="full-width">
+                </div>
+
+                <div class="persona-dimension-group" id="dimension-style">
+                    <label>🎭 Style de communication</label>
+                    <select id="builder-style"></select>
+                </div>
+
+                <div class="persona-dimension-group" id="dimension-expertise">
+                    <label>🧠 Domaine d'expertise</label>
+                    <select id="builder-expertise"></select>
+                </div>
+
+                <div class="persona-dimension-group" id="dimension-behavior">
+                    <label>⚡ Comportement</label>
+                    <select id="builder-behavior"></select>
+                </div>
+
+                <div class="persona-dimension-group" id="dimension-experience">
+                    <label>📊 Niveau d'expérience</label>
+                    <select id="builder-experience"></select>
+                </div>
+
+                <div class="persona-dimension-group">
+                    <label>📝 Contexte personnalisé (optionnel)</label>
+                    <textarea id="builder-context" rows="3" placeholder="Ajoutez des détails spécifiques..."></textarea>
+                </div>
+
+                <div class="persona-dimension-group">
+                    <label>🤖 Format adapté au modèle</label>
+                    <select id="builder-model-format">
+                        <option value="auto">🔄 Auto (selon modèle
+                            sélectionné)</option>
+                        <option value="claude">Claude (XML
+                            structuré)</option>
+                        <option value="gpt">GPT (System message)</option>
+                        <option value="gemini">Gemini (Markdown)</option>
+                        <option value="llama">Llama/Mistral
+                            (Direct)</option>
+                        <option value="deepseek">DeepSeek
+                            (Structuré)</option>
+                        <option value="default">Standard (Markdown
+                            universel)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="persona-builder-preview">
+                <h4>Aperçu du persona généré <span id="builder-format-indicator" class="format-indicator"></span></h4>
+                <pre id="builder-preview-output" class="persona-prompt-preview"></pre>
+            </div>
+
+            <div class="persona-builder-actions">
+                <button id="builder-apply-btn" class="primary-button">
+                    Appliquer ce persona
+                </button>
+                <button id="builder-save-btn" class="secondary-button">
+                    💾 Sauvegarder dans ma bibliothèque
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/main.js" type="module"></script>
 </body>
 

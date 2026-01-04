@@ -26,16 +26,46 @@ function computeAnalysis(cards, recommendedSections) {
         score -= missingImportant * 12;
         const goalCard = byType.goal;
         if (recommended.includes('goal') && (!goalCard || !goalCard.content || !goalCard.content.trim())) {
-            recommendations.push('Ajoute une section Goal claire pour expliciter l’objectif de la tâche.');
+            recommendations.push('Ajoute une section But claire pour expliciter l\'objectif de la tâche.');
         }
         const contextCard = byType.context;
         if (recommended.includes('context') && (!contextCard || !contextCard.content || !contextCard.content.trim())) {
-            recommendations.push('Ajoute une section Context pour donner plus de contexte à l’IA.');
+            recommendations.push('Ajoute une section Contexte pour donner plus de contexte à l\'IA.');
         }
         const examplesCard = byType.examples;
         if (recommended.includes('examples') && (!examplesCard || !examplesCard.content || !examplesCard.content.trim())) {
-            recommendations.push('Ajoute des exemples concrets dans la section Examples.');
+            recommendations.push('Ajoute des exemples concrets dans la section Exemples.');
         }
+    }
+
+    // Advanced prompting checks
+    const systemCard = byType.system_instructions;
+    if (recommended.includes('system_instructions') && (!systemCard || !systemCard.content || !systemCard.content.trim())) {
+        recommendations.push('Ajoute des Instructions système pour définir le comportement global de l\'IA.');
+    }
+
+    const reasoningCard = byType.reasoning_steps;
+    if (recommended.includes('reasoning_steps') && (!reasoningCard || !reasoningCard.content || !reasoningCard.content.trim())) {
+        recommendations.push('Définis les Étapes de raisonnement (Chain of Thought) pour guider la réflexion de l\'IA.');
+    }
+
+    const fewShotCard = byType.few_shot_examples;
+    if (recommended.includes('few_shot_examples')) {
+        if (!fewShotCard || !fewShotCard.content || !fewShotCard.content.trim()) {
+            recommendations.push('Ajoute des Exemples Few-shot (2-3 minimum) pour démontrer le comportement attendu.');
+        } else {
+            // Check for minimum examples
+            const exampleCount = (fewShotCard.content.match(/Input\s*:/gi) || []).length;
+            if (exampleCount < 2) {
+                score -= 8;
+                recommendations.push('Le Few-shot fonctionne mieux avec au moins 2-3 exemples. Tu n\'en as que ' + exampleCount + '.');
+            }
+        }
+    }
+
+    const schemaCard = byType.output_schema;
+    if (recommended.includes('output_schema') && (!schemaCard || !schemaCard.content || !schemaCard.content.trim())) {
+        recommendations.push('Définis un Schéma de sortie pour structurer précisément la réponse attendue.');
     }
 
     const constraintsCard = byType.constraints;

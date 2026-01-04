@@ -1,8 +1,13 @@
 export const PROMPT_SECTIONS = {
-    persona: {
+    system_instructions: {
+        label: 'Instructions système',
+        description: 'Instructions de haut niveau pour configurer le comportement global de l\'IA. Ces instructions sont prioritaires et persistantes.',
+        tooltip: 'Ex : Tu dois toujours vérifier tes sources. Ne jamais inventer de données. Répondre en français.'
+    },
+    profil: {
         label: 'Profil',
-        description: 'Définissez le profil complet de l’IA. Pensez à son rôle, mais aussi à son contexte : époque, localisation, statut social, etc.',
-        tooltip: 'Ex : "Tu es un vieux sage du 18ème siècle", "Tu es une développeuse frontend à Paris", "Tu es un critique d’art cynique."'
+        description: 'Définissez le profil complet de l\'IA. Pensez à son rôle, mais aussi à son contexte : époque, localisation, statut social, etc.',
+        tooltip: 'Ex : "Tu es un vieux sage du 18ème siècle", "Tu es une développeuse frontend à Paris", "Tu es un critique d\'art cynique."'
     },
     travail: {
         label: 'Travail',
@@ -24,11 +29,6 @@ export const PROMPT_SECTIONS = {
         description: 'Décrivez le contexte global et fournissez les informations essentielles ou l’historique pertinent pour que l’IA comprenne bien la situation.',
         tooltip: 'Ex : Le client est mécontent suite à un bug. L’objectif est de le rassurer et de lui proposer une solution.'
     },
-    examples: {
-        label: 'Exemples',
-        description: 'Fournissez des exemples concrets qui illustrent les entrées que recevra l’IA et les sorties que vous attendez, ou même des dialogues. C’est crucial pour affiner son comportement.',
-        tooltip: 'Ex : Pour une traduction : [Input: "Hello world"] → [Output: "Bonjour le monde"].'
-    },
     audience: {
         label: 'Audience',
         description: 'À qui s’adresse la réponse de l’IA ? Précisez le public cible (experts, enfants, clients...) pour adapter le niveau de langage et la complexité.',
@@ -48,6 +48,31 @@ export const PROMPT_SECTIONS = {
         label: 'Ton',
         description: 'Définissez le ton et le style de communication de l’IA (formel, amical, académique, humoristique, directif...). Cela influence directement la perception du message.',
         tooltip: 'Ex : Ton professoral et patient, style direct et concis, langage fleuri et poétique.'
+    },
+    examples: {
+        label: 'Exemples',
+        description: 'Fournissez des exemples concrets qui illustrent les entrées que recevra l’IA et les sorties que vous attendez, ou même des dialogues. C’est crucial pour affiner son comportement.',
+        tooltip: 'Ex : Pour une traduction : [Input: "Hello world"] → [Output: "Bonjour le monde"].'
+    },
+    few_shot_examples: {
+        label: 'Exemples Few-shot',
+        description: 'Fournissez plusieurs exemples entrée/sortie formatés pour guider l’IA par démonstration. Chaque exemple doit illustrer le comportement attendu.',
+        tooltip: 'Ex : Input: "2+2" → Output: "4" | Input: "5*3" → Output: "15"'
+    },
+    reasoning_steps: {
+        label: 'Étapes de raisonnement',
+        description: 'Définissez la structure de raisonnement que l’IA doit suivre (Chain of Thought). Décomposez le problème en étapes logiques explicites.',
+        tooltip: 'Ex : 1) Analyser le problème, 2) Identifier les variables, 3) Appliquer la formule, 4) Vérifier le résultat.'
+    },
+    thinking_process: {
+        label: 'Processus de réflexion',
+        description: 'Guidez l’IA sur comment elle doit réfléchir avant de répondre. Utile pour les tâches complexes nécessitant une analyse approfondie.',
+        tooltip: 'Ex : Avant de répondre, analyse les pour et contre, considère les alternatives, puis conclus.'
+    },
+    output_schema: {
+        label: 'Schéma de sortie',
+        description: 'Définissez précisément la structure de données attendue en sortie (JSON, XML, ou autre format structuré).',
+        tooltip: 'Ex : {"name": string, "age": number, "skills": string[]}'
     },
     rhythm: {
         label: 'Rythme',
@@ -76,7 +101,7 @@ export const PROMPT_SECTIONS = {
     },
     style: {
         label: 'Style',
-        description: 'Définissez le style artistique ou visuel global : réaliste, bande dessinée, aquarelle, peinture à l’huile, rendu 3D, pixel art, photo, etc.',
-        tooltip: 'Ex : Style manga des années 90, peinture à l’huile impressionniste, rendu 3D photoréaliste.'
+        description: 'Définissez le style artistique ou visuel global : réaliste, bande dessinée, aquarelle, peinture à l\'huile, rendu 3D, pixel art, photo, etc.',
+        tooltip: 'Ex : Style manga des années 90, peinture à l\'huile impressionniste, rendu 3D photoréaliste.'
     }
 };

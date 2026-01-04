@@ -291,12 +291,28 @@ function importPromptFromData(data, fileName) {
         }
     }
 
+    // Valider les types de cartes contre les sections autorisées
+    const validSectionTypes = Object.keys(coreModule.PROMPT_SECTIONS || {});
+    const validCards = data.cards.filter(card => {
+        if (!card.type || typeof card.type !== 'string') return false;
+        if (validSectionTypes.length > 0 && !validSectionTypes.includes(card.type)) {
+            console.warn(`[Import] Type de section invalide ignoré: ${card.type}`);
+            return false;
+        }
+        return true;
+    });
+
+    if (validCards.length === 0) {
+        coreModule.showToast('Aucune section valide trouvée dans le fichier.', 'error');
+        return;
+    }
+
     // Demander confirmation avant d'importer
-    coreModule.showConfirm(`Importer le prompt "${promptName}" avec ${data.cards.length} sections ?`, () => {
+    coreModule.showConfirm(`Importer le prompt "${promptName}" avec ${validCards.length} sections ?`, () => {
         // Mettre à jour les cartes avec les données importées
-        const newCards = data.cards.map(card => ({
+        const newCards = validCards.map(card => ({
             type: card.type,
-            content: card.content || '',
+            content: typeof card.content === 'string' ? card.content : '',
             id: card.id || Date.now()
         }));
 
@@ -487,8 +503,11 @@ function updateSavedPromptsSelect() {
 
     // Ajouter les modèles (lecture seule)
     if (coreModule && coreModule.TEMPLATES) {
-        const templatesGroup = document.createElement('optgroup');
-        templatesGroup.label = 'Modèles';
+        const classicGroup = document.createElement('optgroup');
+        classicGroup.label = '📋 Modèles classiques';
+
+        const techniqueGroup = document.createElement('optgroup');
+        techniqueGroup.label = '🎯 Templates de techniques';
 
         Object.keys(coreModule.TEMPLATES).forEach(id => {
             const template = coreModule.TEMPLATES[id];
@@ -501,10 +520,20 @@ function updateSavedPromptsSelect() {
             const option = document.createElement('option');
             option.value = `template|${id}`;
             option.textContent = displayName;
-            templatesGroup.appendChild(option);
+
+            if (template.technique) {
+                techniqueGroup.appendChild(option);
+            } else {
+                classicGroup.appendChild(option);
+            }
         });
 
-        savedPromptsSelect.appendChild(templatesGroup);
+        if (classicGroup.children.length > 0) {
+            savedPromptsSelect.appendChild(classicGroup);
+        }
+        if (techniqueGroup.children.length > 0) {
+            savedPromptsSelect.appendChild(techniqueGroup);
+        }
     }
 
     // Ajouter les prompts enregistrés
@@ -706,7 +735,7 @@ function ensureRenameSuggestionElements() {
 
     row.appendChild(renameSuggestionContainer);
 
-    renameSuggestionContainer.style.display = 'none';
+    renameSuggestionContainer.classList.add('hidden');
 
     // Use mousedown to prevent blur event on input from firing first and hiding the button
     renameSuggestionButton.addEventListener('mousedown', (e) => {
@@ -722,7 +751,8 @@ function clearRenameSuggestion() {
     }
 
     if (renameSuggestionContainer) {
-        renameSuggestionContainer.style.display = 'none';
+        renameSuggestionContainer.classList.add('hidden');
+        renameSuggestionContainer.classList.remove('show-flex');
     }
 }
 
@@ -772,7 +802,8 @@ function handlePromptNameInputChange() {
 
         const labelName = latestName || '(sans nom)';
         renameSuggestionTextElement.textContent = 'Renommer le prompt en « ' + labelName + ' » ?';
-        renameSuggestionContainer.style.display = 'flex';
+        renameSuggestionContainer.classList.remove('hidden');
+        renameSuggestionContainer.classList.add('show-flex');
     }, 2000);
 }
 
