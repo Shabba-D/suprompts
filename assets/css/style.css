@@ -1295,17 +1295,91 @@ select {
 .prompt-manager-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 20px;
-    background-color: var(--card);
-    /* Use card bg for unity */
-    border-radius: 8px;
-    padding: 4px;
+    background-color: var(--background);
+    border-radius: var(--radius);
+    padding: 12px;
+    border: 1px solid var(--border);
 }
 
 /* Rows */
+.prompt-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Identity row */
+.prompt-identity-row {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Load row */
+.prompt-load-row {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Tools row with groups */
+.prompt-tools-row {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tool-label {
+    font-size: 0.8em;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+}
+
+/* Icon button danger variant */
+.icon-button-danger {
+    color: var(--muted-foreground);
+}
+
+.icon-button-danger:hover {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+    border-color: var(--destructive);
+}
+
+/* Copy main button - Primary action */
+.copy-main-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    margin-top: 4px;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.copy-main-button:hover {
+    opacity: 0.9;
+}
+
+.copy-main-button:active {
+    transform: scale(0.98);
+}
+
+/* Legacy support */
 .prompt-header-row,
-.prompt-tools-row,
 .prompt-actions-row {
     display: flex;
     align-items: center;
