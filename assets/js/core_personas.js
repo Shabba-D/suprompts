@@ -6,6 +6,7 @@ import {
     PERSONA_CATEGORIES,
     PERSONA_LIBRARY,
     MODEL_PERSONA_FORMATS,
+    SPECIALIZED_EXPERTISE,
     buildPersonaPrompt,
     buildPersonaPromptForModel,
     getPersonasByCategory,
@@ -39,8 +40,12 @@ const builderBehavior = document.getElementById('builder-behavior');
 const builderExperience = document.getElementById('builder-experience');
 const builderContext = document.getElementById('builder-context');
 const builderModelFormat = document.getElementById('builder-model-format');
+const builderDepthLevel = document.getElementById('builder-depth-level');
+const builderReflectionMode = document.getElementById('builder-reflection-mode');
+const builderEvaluationCriteria = document.getElementById('builder-evaluation-criteria');
 const builderFormatIndicator = document.getElementById('builder-format-indicator');
 const builderPreviewOutput = document.getElementById('builder-preview-output');
+const hintRag = document.getElementById('hint-rag');
 const builderApplyBtn = document.getElementById('builder-apply-btn');
 const builderSaveBtn = document.getElementById('builder-save-btn');
 
@@ -151,7 +156,7 @@ function setupBuilderModal() {
     }
 
     // Update preview on any change
-    [builderName, builderStyle, builderExpertise, builderBehavior, builderExperience, builderContext, builderModelFormat].forEach(el => {
+    [builderName, builderStyle, builderExpertise, builderBehavior, builderExperience, builderContext, builderModelFormat, builderDepthLevel, builderReflectionMode, builderEvaluationCriteria, builderFormatIndicator].forEach(el => {
         if (el) {
             el.addEventListener('change', updateBuilderPreview);
             el.addEventListener('input', updateBuilderPreview);
@@ -402,6 +407,9 @@ function updateBuilderPreview() {
     };
 
     const customContext = builderContext ? builderContext.value : '';
+    const reflectionMode = builderReflectionMode ? builderReflectionMode.checked : false;
+    const depthLevel = builderDepthLevel ? builderDepthLevel.value : 'basic';
+    const evaluationCriteria = builderEvaluationCriteria ? builderEvaluationCriteria.checked : false;
 
     // Get selected format or auto-detect from main model selector
     let formatKey = builderModelFormat ? builderModelFormat.value : 'default';
@@ -416,12 +424,30 @@ function updateBuilderPreview() {
         formatName = MODEL_PERSONA_FORMATS[formatKey].name || formatKey;
     }
 
-    // Update format indicator
+    // Update format indicator with options status
     if (builderFormatIndicator) {
-        builderFormatIndicator.textContent = `(${formatName})`;
+        const indicators = [];
+        if (depthLevel !== 'basic') indicators.push(`📈 ${depthLevel}`);
+        if (reflectionMode) indicators.push('🧠 R-CHAR');
+        if (evaluationCriteria) indicators.push('✅ Éval');
+        const indicatorText = indicators.length > 0 ? ` + ${indicators.join(' + ')}` : '';
+        builderFormatIndicator.textContent = `(${formatName}${indicatorText})`;
     }
 
-    const prompt = buildPersonaPromptForModel(dimensions, customContext, formatKey);
+    // Show/hide RAG warning for specialized expertise
+    if (hintRag) {
+        const isSpecialized = SPECIALIZED_EXPERTISE.includes(dimensions.expertise);
+        const isAdvancedOrExpert = depthLevel === 'advanced' || depthLevel === 'expert';
+        hintRag.style.display = (isSpecialized && isAdvancedOrExpert) ? 'block' : 'none';
+    }
+
+    const options = {
+        reflectionMode,
+        depthLevel,
+        evaluationCriteria
+    };
+
+    const prompt = buildPersonaPromptForModel(dimensions, customContext, formatKey, options);
     builderPreviewOutput.textContent = prompt;
 }
 

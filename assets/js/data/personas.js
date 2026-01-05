@@ -579,20 +579,22 @@ Adopte ce persona pour toutes tes réponses. Reste cohérent avec le rôle, l'ex
         description: 'Format optimisé pour le system message GPT',
         formatter: (data) => `# Persona
 
-You are a ${data.experience} professional.
+Tu es un professionnel ${data.experience}.
 
 ## Expertise
 ${data.expertise}
 
-## Communication Style
+## Style de communication
 ${data.style}
 
-## Behavior
+## Comportement
 ${data.behavior}
-${data.context ? `\n## Context\n${data.context}` : ''}
+${data.context ? `\n## Contexte\n${data.context}` : ''}
+${data.depthLevel ? `\n## Niveau de cohérence\n${DEPTH_LEVEL_INSTRUCTIONS[data.depthLevel].instruction}` : ''}
+${data.evaluationCriteria ? `\n## Critères d'auto-évaluation\n${EVALUATION_CRITERIA_INSTRUCTIONS.default}` : ''}
 
 ---
-Maintain this persona consistently throughout the conversation.`
+Maintiens ce persona de manière cohérente tout au long de la conversation.`
     },
     gemini: {
         name: 'Gemini (Markdown)',
@@ -604,6 +606,8 @@ Maintain this persona consistently throughout the conversation.`
 💬 **Style :** ${data.style}
 ⚡ **Comportement :** ${data.behavior}
 ${data.context ? `\n📝 **Contexte :** ${data.context}` : ''}
+${data.depthLevel ? `\n🔍 **Niveau de cohérence :** ${DEPTH_LEVEL_INSTRUCTIONS[data.depthLevel].instruction}` : ''}
+${data.evaluationCriteria ? `\n📊 **Critères d'auto-évaluation :** ${EVALUATION_CRITERIA_INSTRUCTIONS.default}` : ''}
 
 *Applique ce persona de manière cohérente.*`
     },
@@ -618,6 +622,8 @@ EXPERTISE : ${data.expertise}
 STYLE : ${data.style}
 COMPORTEMENT : ${data.behavior}
 ${data.context ? `CONTEXTE : ${data.context}` : ''}
+${data.depthLevel ? `NIVEAU DE COHÉRENCE : ${DEPTH_LEVEL_INSTRUCTIONS[data.depthLevel].instruction}` : ''}
+${data.evaluationCriteria ? `CRITÈRES D'AUTO-ÉVALUATION : ${EVALUATION_CRITERIA_INSTRUCTIONS.default}` : ''}
 
 IMPORTANT : Ne sors JAMAIS de ce rôle. Chaque réponse doit refléter ce persona.
 [/PERSONA]`
@@ -625,18 +631,20 @@ IMPORTANT : Ne sors JAMAIS de ce rôle. Chaque réponse doit refléter ce person
     deepseek: {
         name: 'DeepSeek (Structuré)',
         description: 'Format structuré avec étapes pour DeepSeek',
-        formatter: (data) => `### Persona Configuration ###
+        formatter: (data) => `### Configuration du Persona ###
 
-1. **Experience Level**: ${data.experience}
-2. **Domain Expertise**: ${data.expertise}
-3. **Communication Style**: ${data.style}
-4. **Behavioral Traits**: ${data.behavior}
-${data.context ? `5. **Additional Context**: ${data.context}` : ''}
+1. **Niveau d'expérience** : ${data.experience}
+2. **Domaine d'expertise** : ${data.expertise}
+3. **Style de communication** : ${data.style}
+4. **Traits comportementaux** : ${data.behavior}
+${data.context ? `5. **Contexte additionnel** : ${data.context}` : ''}
+${data.depthLevel ? `6. **Niveau de cohérence** : ${DEPTH_LEVEL_INSTRUCTIONS[data.depthLevel].instruction}` : ''}
+${data.evaluationCriteria ? `7. **Critères d'auto-évaluation** : ${EVALUATION_CRITERIA_INSTRUCTIONS.default}` : ''}
 
 ### Instructions ###
-- Embody this persona in all responses
-- Maintain consistency with defined characteristics
-- Apply domain expertise when relevant`
+- Incarne ce persona dans toutes tes réponses
+- Maintiens la cohérence avec les caractéristiques définies
+- Applique l'expertise du domaine quand c'est pertinent`
     },
     default: {
         name: 'Standard (Markdown)',
@@ -648,18 +656,101 @@ ${data.context ? `5. **Additional Context**: ${data.context}` : ''}
 **Style de communication :** ${data.style}
 
 **Comportement :** ${data.behavior}
-${data.context ? `\n**Contexte spécifique :**\n${data.context}` : ''}`
+${data.context ? `\n**Contexte spécifique :**\n${data.context}` : ''}
+${data.depthLevel ? `\n**Niveau de cohérence :**\n${DEPTH_LEVEL_INSTRUCTIONS[data.depthLevel].instruction}` : ''}
+${data.evaluationCriteria ? `\n**Critères d'auto-évaluation :**\n${EVALUATION_CRITERIA_INSTRUCTIONS.default}` : ''}
+${data.reflectionMode ? `\n${REFLECTION_MODE_INSTRUCTIONS.default}` : ''}`
     }
+};
+
+/**
+ * Depth Level Instructions
+ * Different levels of persona immersion
+ */
+export const DEPTH_LEVEL_INSTRUCTIONS = {
+    basic: {
+        name: 'Basique',
+        instruction: `\n\n**Niveau de cohérence : Basique**\nMaintiens une cohérence de surface : respecte le ton et le style définis.`
+    },
+    advanced: {
+        name: 'Avancé',
+        instruction: `\n\n**Niveau de cohérence : Avancé**\nMaintiens une cohérence approfondie :\n- Respecte les nuances émotionnelles du persona\n- Applique l'expertise de manière contextuelle\n- Adapte ton vocabulaire au domaine`
+    },
+    expert: {
+        name: 'Expert',
+        instruction: `\n\n**Niveau de cohérence : Expert**\nMaintiens une cohérence totale :\n- Raisonnement aligné avec l'expérience du persona\n- Créativité authentique dans le domaine d'expertise\n- Limites de connaissances réalistes\n- Réponses imprégnées de la personnalité définie`
+    }
+};
+
+/**
+ * Evaluation Criteria Instructions
+ * Self-evaluation rules for the persona
+ */
+export const EVALUATION_CRITERIA_INSTRUCTIONS = {
+    default: `\n\n**Critères d'auto-évaluation**\nAvant chaque réponse, vérifie :\n1. Ma réponse respecte-t-elle les limites de connaissances de mon persona ?\n2. Mon ton et style sont-ils cohérents avec le persona ?\n3. Mon expertise est-elle appliquée de manière crédible ?\nSi un critère n'est pas respecté, ajuste ta réponse.`
+};
+
+/**
+ * Expertise domains that require external documentation
+ * Used to show RAG warning
+ */
+export const SPECIALIZED_EXPERTISE = ['legal', 'medical', 'finance', 'tech'];
+
+/**
+ * R-CHAR Reflection Mode Instructions
+ * Metacognitive framework that forces the LLM to think before answering
+ */
+export const REFLECTION_MODE_INSTRUCTIONS = {
+    claude: `
+<metacognition>
+Avant de répondre à chaque instruction :
+1. Réfléchis étape par étape dans <think>...</think>
+2. Évalue si ta réflexion est cohérente avec ton persona
+3. Formule ta réponse finale dans <answer>...</answer>
+</metacognition>`,
+    gpt: `
+## Processus Métacognitif (R-CHAR)
+Avant chaque réponse :
+1. Réfléchis étape par étape dans <think>...</think>
+2. Évalue si ton raisonnement est aligné avec ton persona
+3. Formule ta réponse finale dans <answer>...</answer>`,
+    gemini: `
+🧠 **Mode Réflexion Activé**
+Avant chaque réponse :
+1. Réfléchis dans \`<think>...\`
+2. Vérifie que ta réflexion respecte ton persona
+3. Réponds dans <answer>...</answer>
+NE SAUTE JAMAIS ces étapes.`,
+    llama: `
+[RÉFLEXION OBLIGATOIRE]
+PROCESSUS À SUIVRE :
+1. Réfléchis dans <think>...</think>
+2. Vérifie que ta réflexion respecte ton persona
+3. Réponds dans <answer>...</answer>
+NE SAUTE JAMAIS ces étapes.`,
+    deepseek: `
+### Mode Métacognitif ###
+Processus obligatoire pour chaque réponse :
+1. **Réflexion** : Utilise <think>...</think> pour raisonner étape par étape
+2. **Validation** : Vérifie l'alignement avec les caractéristiques du persona
+3. **Réponse** : Formule ta réponse dans <answer>...</answer>`,
+    default: `
+**Mode Réflexion (R-CHAR)**
+Avant chaque réponse :
+1. Réfléchis dans <think>...</think>
+2. Vérifie que ta réflexion respecte ton persona
+3. Réponds dans <answer>...</answer>`
 };
 
 /**
  * Generate a persona prompt from selected dimensions (default format)
  * @param {Object} dimensions - Selected dimension values
  * @param {string} customContext - Additional context
+ * @param {boolean} reflectionMode - Enable R-CHAR reflection mode
  * @returns {string} Generated persona prompt
  */
-export function buildPersonaPrompt(dimensions, customContext = '') {
-    return buildPersonaPromptForModel(dimensions, customContext, 'default');
+export function buildPersonaPrompt(dimensions, customContext = '', reflectionMode = false) {
+    return buildPersonaPromptForModel(dimensions, customContext, 'default', reflectionMode);
 }
 
 /**
@@ -667,28 +758,60 @@ export function buildPersonaPrompt(dimensions, customContext = '') {
  * @param {Object} dimensions - Selected dimension values
  * @param {string} customContext - Additional context
  * @param {string} modelId - Model identifier (claude, gpt, gemini, llama, deepseek, default)
+ * @param {Object} options - Additional options (reflectionMode, depthLevel, evaluationCriteria)
  * @returns {string} Generated persona prompt in model-specific format
  */
-export function buildPersonaPromptForModel(dimensions, customContext = '', modelId = 'default') {
+export function buildPersonaPromptForModel(dimensions, customContext = '', modelId = 'default', options = {}) {
+    // Handle legacy boolean parameter for reflectionMode
+    const opts = typeof options === 'boolean' ?
+        {
+            reflectionMode: options
+        } :
+        options;
+
+    const {
+        reflectionMode = false, depthLevel = 'basic', evaluationCriteria = false
+    } = opts;
+
     // Get dimension labels
     const expOption = PERSONA_DIMENSIONS.experience.options.find(o => o.id === dimensions.experience);
     const expertiseOption = PERSONA_DIMENSIONS.expertise.options.find(o => o.id === dimensions.expertise);
     const styleOption = PERSONA_DIMENSIONS.style.options.find(o => o.id === dimensions.style);
     const behaviorOption = PERSONA_DIMENSIONS.behavior.options.find(o => o.id === dimensions.behavior);
 
+    // Normalize model ID to format key
+    const formatKey = getFormatKeyFromModel(modelId);
+
     const data = {
         experience: expOption ? `${expOption.label} – ${expOption.description}` : '',
         expertise: expertiseOption ? `${expertiseOption.label} – ${expertiseOption.description}` : '',
         style: styleOption ? `${styleOption.label} – ${styleOption.description}` : '',
         behavior: behaviorOption ? `${behaviorOption.label} – ${behaviorOption.description}` : '',
-        context: customContext ? customContext.trim() : ''
+        context: customContext ? customContext.trim() : '',
+        depthLevel: depthLevel,
+        evaluationCriteria: evaluationCriteria
     };
 
-    // Normalize model ID to format key
-    const formatKey = getFormatKeyFromModel(modelId);
     const format = MODEL_PERSONA_FORMATS[formatKey] || MODEL_PERSONA_FORMATS.default;
+    let prompt = format.formatter(data);
 
-    return format.formatter(data);
+    // Append depth level instructions if not basic
+    if (depthLevel && depthLevel !== 'basic' && DEPTH_LEVEL_INSTRUCTIONS[depthLevel]) {
+        prompt += DEPTH_LEVEL_INSTRUCTIONS[depthLevel].instruction;
+    }
+
+    // Append evaluation criteria if enabled
+    if (evaluationCriteria) {
+        prompt += EVALUATION_CRITERIA_INSTRUCTIONS.default;
+    }
+
+    // Append reflection mode instructions if enabled
+    if (reflectionMode) {
+        const reflectionInstructions = REFLECTION_MODE_INSTRUCTIONS[formatKey] || REFLECTION_MODE_INSTRUCTIONS.default;
+        prompt += reflectionInstructions;
+    }
+
+    return prompt;
 }
 
 /**

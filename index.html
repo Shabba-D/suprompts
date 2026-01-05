@@ -144,6 +144,10 @@
                 <p class="analysis-note">Analyse locale (aucun appel
                     externe). Prévue pour intégration API ultérieure.</p>
             </div>
+            <p id="hint-translate-main" class="hint-translate-main">💡
+                <strong>Conseil :</strong> Les modèles d'IA sont
+                généralement plus performants en anglais. Pensez à traduire
+                votre prompt final pour de meilleurs résultats.</p>
             <pre id="prompt-output" aria-label="Sortie du prompt"></pre>
         </div>
     </div>
@@ -384,11 +388,50 @@
                             universel)</option>
                     </select>
                 </div>
+
+                <div class="persona-dimension-group">
+                    <label>📈 Niveau de profondeur</label>
+                    <select id="builder-depth-level">
+                        <option value="basic">Basique – Cohérence de surface
+                            (style, ton)</option>
+                        <option value="advanced">Avancé – Nuances
+                            émotionnelles et expertise</option>
+                        <option value="expert">Expert – Raisonnement
+                            complexe et créativité authentique</option>
+                    </select>
+                </div>
+
+                <div class="persona-dimension-group persona-reflection-mode">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="builder-reflection-mode">
+                        <span>🧠 Mode Réflexion (R-CHAR)</span>
+                    </label>
+                    <p class="dimension-hint">Active la réflexion
+                        métacognitive : le LLM réfléchira dans
+                        <code>&lt;think&gt;</code> avant de répondre dans
+                        <code>&lt;answer&gt;</code></p>
+                </div>
+
+                <div class="persona-dimension-group persona-reflection-mode">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="builder-evaluation-criteria">
+                        <span>✅ Critères d'auto-évaluation</span>
+                    </label>
+                    <p class="dimension-hint">Le LLM vérifiera la cohérence
+                        de ses réponses avec les limites de connaissances et
+                        le comportement du persona</p>
+                </div>
             </div>
 
             <div class="persona-builder-preview">
                 <h4>Aperçu du persona généré <span id="builder-format-indicator" class="format-indicator"></span></h4>
                 <pre id="builder-preview-output" class="persona-prompt-preview"></pre>
+                <div id="builder-hints" class="builder-hints">
+                    <p id="hint-rag" class="hint-rag" style="display: none;">📚 <strong>Persona spécialisé
+                            détecté :</strong> Pour de meilleurs résultats,
+                        fournissez de la documentation externe ou envisagez
+                        un système RAG (Retrieval-Augmented Generation).</p>
+                </div>
             </div>
 
             <div class="persona-builder-actions">
